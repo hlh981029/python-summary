@@ -1583,6 +1583,19 @@ class DerivedClassName(Base1, Base2, Base3):
 
 Dynamic ordering is necessary because all cases of multiple inheritance exhibit one or more diamond relationships (where at least one of the parent classes can be accessed through multiple paths from the bottommost class). For example, all classes inherit from object, so any case of multiple inheritance provides more than one path to reach object. To keep the base classes from being accessed more than once, the dynamic algorithm linearizes the search order in a way that preserves the left-to-right ordering specified in each class, that calls each parent only once, and that is monotonic (meaning that a class can be subclassed without affecting the precedence order of its parents). Taken together, these properties make it possible to design reliable and extensible classes with multiple inheritance.
 
+## 调用父类构造函数
+
+```python
+# 调用最近的父类的构造函数
+super().__init__(arg1, arg2, ... )
+
+# 调用指定父类的构造函数
+super(Child, self).__init__(arg1, arg2, ... )
+Father.__init__(self, arg1, arg2, ... )
+```
+
+调用父类其他属性同构造函数
+
 ## Private Variables
 
 “Private” instance variables that cannot be accessed except from inside an object don’t exist in Python. However, there is a convention that is followed by most Python code: a name prefixed with an underscore (e.g. `_spam`) should be treated as a non-public part of the API (whether it is a function, a method or a data member).
@@ -1661,7 +1674,187 @@ Instance method objects have attributes, too: `m.__self__` is the instance objec
 
 # 装饰器
 
+# 列表生成式
+
+List comprehensions provide a concise way to create lists. Common applications are to make new lists where each element is the result of some operations applied to each member of another sequence or iterable, or to create a subsequence of those elements that satisfy a certain condition.
+
+For example, assume we want to create a list of squares, like:
+
+```python
+>>>
+>>> squares = []
+>>> for x in range(10):
+...     squares.append(x**2)
+...
+>>> squares
+[0, 1, 4, 9, 16, 25, 36, 49, 64, 81]
+```
+
+Note that this creates (or overwrites) a variable named `x` that still exists after the loop completes. We can calculate the list of squares without any side effects using:
+
+```python
+squares = list(map(lambda x: x**2, range(10)))
+```
+
+or, equivalently:
+
+```python
+squares = [x**2 for x in range(10)]
+```
+
+which is more concise and readable.
+
+A list comprehension consists of brackets containing an expression followed by a for clause, then zero or more for or if clauses. The result will be a new list resulting from evaluating the expression in the context of the for and if clauses which follow it. For example, this listcomp combines the elements of two lists if they are not equal:
+
+```python
+>>>
+>>> [(x, y) for x in [1,2,3] for y in [3,1,4] if x != y]
+[(1, 3), (1, 4), (2, 3), (2, 1), (2, 4), (3, 1), (3, 4)]
+```
+
+and it’s equivalent to:
+
+```python
+>>>
+>>> combs = []
+>>> for x in [1,2,3]:
+...     for y in [3,1,4]:
+...         if x != y:
+...             combs.append((x, y))
+...
+>>> combs
+[(1, 3), (1, 4), (2, 3), (2, 1), (2, 4), (3, 1), (3, 4)]
+```
+
+Note how the order of the for and if statements is the same in both these snippets.
+
+If the expression is a tuple (e.g. the (x, y) in the previous example), it must be parenthesized.
+
+```python
+>>>
+>>> vec = [-4, -2, 0, 2, 4]
+>>> # create a new list with the values doubled
+>>> [x*2 for x in vec]
+[-8, -4, 0, 4, 8]
+>>> # filter the list to exclude negative numbers
+>>> [x for x in vec if x >= 0]
+[0, 2, 4]
+>>> # apply a function to all the elements
+>>> [abs(x) for x in vec]
+[4, 2, 0, 2, 4]
+>>> # call a method on each element
+>>> freshfruit = ['  banana', '  loganberry ', 'passion fruit  ']
+>>> [weapon.strip() for weapon in freshfruit]
+['banana', 'loganberry', 'passion fruit']
+>>> # create a list of 2-tuples like (number, square)
+>>> [(x, x**2) for x in range(6)]
+[(0, 0), (1, 1), (2, 4), (3, 9), (4, 16), (5, 25)]
+>>> # the tuple must be parenthesized, otherwise an error is raised
+>>> [x, x**2 for x in range(6)]
+  File "<stdin>", line 1, in <module>
+    [x, x**2 for x in range(6)]
+               ^
+SyntaxError: invalid syntax
+>>> # flatten a list using a listcomp with two 'for'
+>>> vec = [[1,2,3], [4,5,6], [7,8,9]]
+>>> [num for elem in vec for num in elem]
+[1, 2, 3, 4, 5, 6, 7, 8, 9]
+```
+
+List comprehensions can contain complex expressions and nested functions:
+
+```python
+>>>
+>>> from math import pi
+>>> [str(round(pi, i)) for i in range(1, 6)]
+['3.1', '3.14', '3.142', '3.1416', '3.14159']
+```
+
 # 迭代器
+
+## Iterators
+
+By now you have probably noticed that most container objects can be looped over using a for statement:
+
+```python
+for element in [1, 2, 3]:
+    print(element)
+for element in (1, 2, 3):
+    print(element)
+for key in {'one':1, 'two':2}:
+    print(key)
+for char in "123":
+    print(char)
+for line in open("myfile.txt"):
+    print(line, end='')
+```
+
+This style of access is clear, concise, and convenient. The use of iterators pervades and unifies Python. 
+
+Behind the scenes, the for statement calls `iter()` on the container object. 
+
+The function returns an `iterator` object that defines the method `__next__()` which accesses elements in the container one at a time. 
+
+When there are no more elements, `__next__()` raises a `StopIteration` exception which tells the for loop to terminate. 
+
+You can call the `__next__()` method using the `next()` built-in function; this example shows how it all works:
+
+```python
+>>>
+>>> s = 'abc'
+>>> it = iter(s)
+>>> it
+<iterator object at 0x00A1DB50>
+>>> next(it)
+'a'
+>>> next(it)
+'b'
+>>> next(it)
+'c'
+>>> next(it)
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+    next(it)
+StopIteration
+```
+
+Having seen the mechanics behind the iterator protocol, it is easy to add iterator behavior to your classes. Define an` __iter__()` method which returns an object with a `__next__()` method.
+
+If the class defines `__next__()`, then `__iter__()` can just return self:
+
+```python
+class Reverse:
+    """Iterator for looping over a sequence backwards."""
+    def __init__(self, data):
+        self.data = data
+        self.index = len(data)
+
+    def __iter__(self):
+        return self
+
+    def __next__(self):
+        if self.index == 0:
+            raise StopIteration
+        self.index = self.index - 1
+        return self.data[self.index]
+>>>
+>>> rev = Reverse('spam')
+>>> iter(rev)
+<__main__.Reverse object at 0x00A1DB50>
+>>> for char in rev:
+...     print(char)
+...
+m
+a
+p
+s
+```
+
+## Iterable
+
+ABC for classes that provide the __iter__() method.
+
+Checking `isinstance(obj, Iterable)` detects classes that are registered as `Iterable` or that have an `__iter__()` method, but it does not detect classes that iterate with the `__getitem__()` method. The only reliable way to determine whether an object is iterable is to call `iter(obj)`.
 
 # 生成器
 

@@ -9,9 +9,8 @@
 - [ ] yield from
 - [ ] 装饰器 闭包
 - [ ] 类装饰器 __call\_\_
-- [ ] 迭代器
 - [ ] 异常处理
 - [ ] os模块
-- [ ] 内建函数 sort reverse zip
+- [ ] 内建函数 sort reverse zip map
 - [ ] map reduce filter python 2 & 3
 - [ ] copy deepcopy
