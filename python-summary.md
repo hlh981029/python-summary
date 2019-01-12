@@ -148,6 +148,68 @@ False
 | [hex(x)](http://www.runoob.com/python3/python-func-hex.html) |   将一个整数转换为一个十六进制字符串 |
 | [oct(x)](http://www.runoob.com/python3/python-func-oct.html) |  将一个整数转换为一个八进制字符串 |
 
+
+# 基本运算符
+
+## 算术运算符
+
+<table><tbody>
+<tr><th>运算符</th><th>描述</th><th>实例</th></tr>
+<tr><td>**</td><td>幂 - 返回x的y次幂</td><td> a**b 为10的21次方</td></tr>
+<tr><td>//</td><td>取整除 - 向下取接近除数的整数</td><td>
+
+```python
+>>> 9//2
+4
+>>> -9//2
+-5
+```
+
+</td></tr></tbody></table>
+
+## 比较运算符
+
+- `==`
+- `!=`
+- `>`
+- `<`
+- `>=`
+- `<=`
+
+## 成员运算符
+
+| 运算符 | 描述                                                    |
+| ------ | ------------------------------------------------------- |
+| in     | 如果在指定的序列中找到值返回 True，否则返回 False。     |
+| not in | 如果在指定的序列中没有找到值返回 True，否则返回 False。 |
+
+## 身份运算符
+
+身份运算符用于比较两个对象的存储单元
+
+| 运算符 | 描述                                        | 实例                                                                                         |
+| ------ | ------------------------------------------- | -------------------------------------------------------------------------------------------- |
+| is     | is 是判断两个标识符是不是引用自一个对象     | `x is y`类似`id(x) == id(y)`， 如果引用的是同一个对象则返回 True，否则返回 False              |
+| is not | is not 是判断两个标识符是不是引用自不同对象 | `x is not y`类似`id(a) != id(b)`。如果引用的不是同一个对象则返回结果 True，否则返回 False。 |
+
+## 优先级
+
+|运算符 | 描述|
+|---|---|
+|** | 指数 (最高优先级)|
+|~ + - | 按位翻转, 一元加号和减号 (最后两个的方法名为 +@ 和 -@)|
+|* / % // | 乘，除，取模和取整除|
+|+ - | 加法减法|
+|>> << | 右移，左移运算符|
+|& | 位 'AND'|
+|^ | | 位运算符|
+|<= < > >= | 比较运算符|
+|<> == != | 等于运算符|
+|= %= /= //= -= += *= **= | 赋值运算符|
+|is is not | 身份运算符|
+|in not in | 成员运算符|
+|and or not | 逻辑运算符|
+
 # 数字
 
 ## 表示形式
@@ -417,6 +479,25 @@ Tuples may be constructed in a number of ways:
 | `3 in (1, 2, 3)` | `True` | 元素是否存在 |
 | `for x in (1, 2, 3): print (x,)` | `1 2 3` | 迭代 |
 
+## 元组与列表相加
+
+```python
+>>> a = (1, 2, 3)
+>>> b = [1, 2, 3]
+>>>
+>>> c = a + b
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+TypeError: can only concatenate tuple (not "list") to tuple
+>>> a += b
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+TypeError: can only concatenate tuple (not "list") to tuple
+>>> b += a
+>>> b
+[1, 2, 3, 1, 2, 3]
+```
+
 # 字典
 
 ## 定义
@@ -581,6 +662,437 @@ set ^ other ^ ...
 </tbody></table>
 
 # 函数
+
+## 方法和函数
+
+- 函数(function)是Python中一个可调用对象(callable), 方法(method)是一种特殊的函数。
+- 一个可调用对象是方法和函数，和这个对象无关，仅和这个对象是否与类或实例绑定有关（bound method）。
+- 实例方法，在类中未和类绑定，是函数；在实例中，此实例方法与实例绑定，即变成方法。
+- 静态方法没有和任何类或实例绑定，所以静态方法是个函数。
+- 装饰器不会改变被装饰函数或方法的类型。
+- 类实现`__call__`方法,其实例也不会变成方法或函数,依旧是类的实例。
+- 使用`callalble()`只能判断对象是否可调用,不能判断是不是函数或方法。
+- 判断对象是函数或方法应该使用`type(obj)`。
+
+## 必需参数
+
+必需参数须以正确的顺序传入函数。调用时的数量必须和声明时的一样。
+
+## 默认参数
+
+调用函数时，如果没有传递参数，则会使用默认参数。
+
+```python
+def fun(a, b=2):
+    pass
+```
+
+The default values are evaluated at the point of function definition in the defining scope, so that
+
+```python
+i = 5
+
+def f(arg=i):
+    print(arg)
+
+i = 6
+f()
+```
+
+will print 5.
+
+Important warning: The default value is evaluated only once. This makes a difference when the default is a mutable object such as a list, dictionary, or instances of most classes. For example, the following function accumulates the arguments passed to it on subsequent calls:
+
+```python
+def f(a, L=[]):
+    L.append(a)
+    return L
+
+print(f(1))
+print(f(2))
+print(f(3))
+```
+
+This will print
+
+```python
+[1]
+[1, 2]
+[1, 2, 3]
+```
+
+If you don’t want the default to be shared between subsequent calls, you can write the function like this instead:
+
+```python
+def f(a, L=None):
+    if L is None:
+        L = []
+    L.append(a)
+    return L
+```
+
+## 关键字参数
+
+关键字参数和函数调用关系紧密，函数调用使用关键字参数来确定传入的参数值。
+
+使用关键字参数允许函数调用时参数的顺序与声明时不一致，因为 Python 解释器能够用参数名匹配参数值。
+
+Functions can also be called using keyword arguments of the form `kwarg=value`. For instance, the following function:
+
+```python
+def parrot(voltage, state='a stiff', action='voom', type='Norwegian Blue'):
+    print("-- This parrot wouldn't", action, end=' ')
+    print("if you put", voltage, "volts through it.")
+    print("-- Lovely plumage, the", type)
+    print("-- It's", state, "!")
+```
+
+accepts one required argument (`voltage`) and three optional arguments (`state`, `action`, and `type`). This function can be called in any of the following ways:
+
+```python
+parrot(1000)                                          # 1 positional argument
+parrot(voltage=1000)                                  # 1 keyword argument
+parrot(voltage=1000000, action='VOOOOOM')             # 2 keyword arguments
+parrot(action='VOOOOOM', voltage=1000000)             # 2 keyword arguments
+parrot('a million', 'bereft of life', 'jump')         # 3 positional arguments
+parrot('a thousand', state='pushing up the daisies')  # 1 positional, 1 keyword
+```
+
+but all the following calls would be invalid:
+
+```python
+parrot()                     # required argument missing
+parrot(voltage=5.0, 'dead')  # non-keyword argument after a keyword argument
+parrot(110, voltage=220)     # duplicate value for the same argument
+parrot(actor='John Cleese')  # unknown keyword argument
+```
+
+In a function call, keyword arguments must follow positional arguments. All the keyword arguments passed must match one of the arguments accepted by the function (e.g. `actor` is not a valid argument for the `parrot` function), and their order is not important. This also includes non-optional arguments (e.g. `parrot(voltage=1000)` is valid too). No argument may receive a value more than once. Here’s an example that fails due to this restriction:
+
+```python
+>>>
+>>> def function(a):
+...     pass
+...
+>>> function(0, a=0)
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+TypeError: function() got multiple values for keyword argument 'a'
+```
+
+## 不定长参数
+
+你可能需要一个函数能处理比当初声明时更多的参数。这些参数叫做不定长参数，和上述 2 种参数不同，声明时不会命名。基本语法如下：
+```python
+def functionname([formal_args,] *var_args_tuple ):
+   "函数_文档字符串"
+   function_suite
+   return [expression]
+```
+
+加了星号 * 的参数会以元组(`tuple`)的形式导入，存放所有未命名的变量参数。
+
+```python
+# 可写函数说明
+def printinfo( arg1, *vartuple ):
+   "打印任何传入的参数"
+   print ("输出: ")
+   print (arg1)
+   print (vartuple)
+ 
+# 调用printinfo 函数
+printinfo( 70, 60, 50 )
+```
+
+输出结果：
+
+```python
+输出: 
+70
+(60, 50)
+```
+
+如果在函数调用时没有指定参数，它就是一个空元组。我们也可以不向函数传递未命名的变量。如下：
+
+```python
+# 可写函数说明
+def printinfo( arg1, *vartuple ):
+   "打印任何传入的参数"
+   print ("输出: ")
+   print (arg1)
+   for var in vartuple:
+      print (var)
+   return
+ 
+# 调用printinfo 函数
+printinfo( 10 )
+printinfo( 70, 60, 50 )
+```
+
+输出结果：
+
+```python
+输出:
+10
+输出:
+70
+60
+50
+```
+
+还有一种就是参数带两个星号 **基本语法如下：
+
+```python
+def functionname([formal_args,] **var_args_dict ):
+   "函数_文档字符串"
+   function_suite
+   return [expression]
+```
+
+加了两个星号 ** 的参数会以字典的形式导入。
+
+```python
+# 可写函数说明
+def printinfo( arg1, **vardict ):
+   "打印任何传入的参数"
+   print ("输出: ")
+   print (arg1)
+   print (vardict)
+ 
+# 调用printinfo 函数
+printinfo(1, a=2,b=3)
+```
+
+输出结果：
+
+```python
+输出: 
+1
+{'a': 2, 'b': 3}
+```
+
+声明函数时，参数中星号 * 可以单独出现，例如:
+
+```python
+def f(a,b,*,c):
+    return a+b+c
+```
+如果单独出现星号 * 后的参数必须用关键字传入。
+
+```python
+>>> def f(a,b,*,c):
+...     return a+b+c
+... 
+>>> f(1,2,3)   # 报错
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+TypeError: f() takes 2 positional arguments but 3 were given
+>>> f(1,2,c=3) # 正常
+6
+>>>
+```
+
+## 参数组合
+在Python中定义函数，可以用必选参数、默认参数、可变参数、关键字参数和命名关键字参数，这5种参数都可以组合使用。但是请注意，参数定义的顺序必须是：必选参数、默认参数、可变参数、命名关键字参数和关键字参数。
+
+## 匿名函数（Lambda 表达式）
+
+python 使用 lambda 来创建匿名函数。
+
+所谓匿名，意即不再使用 def 语句这样标准的形式定义一个函数。
+
+- 实际上是一个函数定义的语法糖。
+- lambda 只是一个表达式，函数体比 def 简单很多。
+- lambda的主体是一个表达式，而不是一个代码块。仅仅能在lambda表达式中封装有限的逻辑进去。
+- lambda 函数拥有自己的命名空间，且不能访问自己参数列表之外或全局命名空间里的参数。
+- 虽然lambda函数看起来只能写一行，却不等同于C或C++的内联函数，后者的目的是调用小函数时不占用栈内存从而增加运行效率。
+
+### 语法
+
+lambda 函数的语法只包含一个语句，如下：
+  
+```python
+lambda [arg1 [,arg2,.....argn]]:expression
+```
+
+### 用法
+
+```python
+>>> def make_incrementor(n):
+...     return lambda x: x + n
+...
+>>> f = make_incrementor(42)
+>>> f(0)
+42
+>>> f(1)
+43
+```
+
+The above example uses a lambda expression to return a function. Another use is to pass a small function as an argument:
+
+```python
+>>>
+>>> pairs = [(1, 'one'), (2, 'two'), (3, 'three'), (4, 'four')]
+>>> pairs.sort(key=lambda pair: pair[1])
+>>> pairs
+[(4, 'four'), (1, 'one'), (3, 'three'), (2, 'two')]
+```
+
+## 变量作用域
+
+Python 中，程序的变量并不是在哪个位置都可以访问的，访问权限决定于这个变量是在哪里赋值的。
+
+变量的作用域决定了在哪一部分程序可以访问哪个特定的变量名称。Python的作用域一共有4种，分别是：
+
+- L （Local） 局部作用域
+- E （Enclosing） 闭包函数外的函数中
+- G （Global） 全局作用域
+- B （Built-in） 内建作用域
+
+以 L –> E –> G –>B 的规则查找，即：在局部找不到，便会去局部外的局部找（例如闭包），再找不到就会去全局找，再者去内建中找。
+
+```python
+x = int(2.9)  # 内建作用域
+ 
+g_count = 0  # 全局作用域
+def outer():
+    o_count = 1  # 闭包函数外的函数中
+    def inner():
+        i_count = 2  # 局部作用域
+```
+
+Python 中只有模块（module），类（class）以及函数（def、lambda）才会引入新的作用域，其它的代码块（如 if/elif/else/、try/except、for/while等）是不会引入新的作用域的，也就是说这些语句内定义的变量，外部也可以访问，如下代码：
+
+```python
+>>> if True:
+...  msg = 'I am from Runoob'
+... 
+>>> msg
+'I am from Runoob'
+>>> 
+```
+
+实例中 msg 变量定义在 if 语句块中，但外部还是可以访问的。
+
+如果将 msg 定义在函数中，则它就是局部变量，外部不能访问：
+
+```python
+>>> def test():
+...     msg_inner = 'I am from Runoob'
+... 
+>>> msg_inner
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+NameError: name 'msg_inner' is not defined
+>>> 
+```
+
+从报错的信息上看，说明了 msg_inner 未定义，无法使用，因为它是局部变量，只有在函数内可以使用。
+
+## 全局变量和局部变量
+
+定义在函数内部的变量拥有一个局部作用域，定义在函数外的拥有全局作用域。
+
+局部变量只能在其被声明的函数内部访问，而全局变量可以在整个程序范围内访问。调用函数时，所有在函数内声明的变量名称都将被加入到作用域中。如下实例：
+
+```python
+total = 0 # 这是一个全局变量
+# 可写函数说明
+def sum( arg1, arg2 ):
+    #返回2个参数的和."
+    total = arg1 + arg2 # total在这里是局部变量.
+    print ("函数内是局部变量 : ", total)
+    return total
+ 
+#调用sum函数
+sum( 10, 20 )
+print ("函数外是全局变量 : ", total)
+```
+
+以上实例输出结果：
+
+```python
+函数内是局部变量 :  30
+函数外是全局变量 :  0
+```
+
+global 和 nonlocal关键字
+当内部作用域想修改外部作用域的变量时，就要用到global和nonlocal关键字了。
+
+以下实例修改全局变量 num：
+
+```python
+num = 1
+def fun1():
+    global num  # 需要使用 global 关键字声明
+    print(num) 
+    num = 123
+    print(num)
+fun1()
+print(num)
+```
+
+以上实例输出结果：
+
+```python
+1
+123
+123
+```
+
+如果要修改嵌套作用域（enclosing 作用域，外层非全局作用域）中的变量则需要 nonlocal 关键字了，如下实例：
+
+```python 
+def outer():
+    num = 10
+    def inner():
+        nonlocal num   # nonlocal关键字声明
+        num = 100
+        print(num)
+    inner()
+    print(num)
+outer()
+```
+
+以上实例输出结果：
+
+```python
+100
+100
+```
+
+另外有一种特殊情况，假设下面这段代码被运行：
+
+```python
+a = 10
+def test():
+    a = a + 1
+    print(a)
+test()
+```
+
+以上程序执行，报错信息如下：
+
+```python
+Traceback (most recent call last):
+  File "test.py", line 7, in <module>
+    test()
+  File "test.py", line 5, in test
+    a = a + 1
+UnboundLocalError: local variable 'a' referenced before assignment
+```
+
+错误信息为局部作用域引用错误，因为 test 函数中的 a 使用的是局部，未定义，无法修改。
+
+修改 a 为全局变量，通过函数参数传递，可以正常执行输出结果为：
+
+```python
+a = 10
+def test(a):
+    a = a + 1
+    print(a)
+test(a)
+```
 
 # 类
 
