@@ -1858,6 +1858,94 @@ Checking `isinstance(obj, Iterable)` detects classes that are registered as `Ite
 
 # 生成器
 
+## `yield` 表达式
+
+
+语法：
+
+```
+yield_atom       ::=  "(" yield_expression ")"
+yield_expression ::=  "yield" [expression_list | "from" expression]
+```
+
+The yield expression is used when defining a `generator` function and thus can only be used in the body of a function definition. Using a yield expression in a function’s body causes that function to be a `generator`. For example:
+
+```python
+def gen():  # defines a generator function
+    yield 123
+```
+
+When a generator function is called, it returns an `iterator` known as a `generator`. That generator then controls the execution of the generator function. The execution starts when one of the generator’s methods is called. At that time, the execution proceeds to the first `yield` expression, where it is suspended again, returning the value of `expression_list` to the generator’s caller. By suspended, we mean that all local state is retained, including the current bindings of local variables, the instruction pointer, the internal evaluation stack, and the state of any exception handling. When the execution is resumed by calling one of the generator’s methods, the function can proceed exactly as if the yield expression were just another external call. 
+
+**`yield` 表达式返回值**：The value of the yield expression after resuming depends on the method which resumed the execution. If `__next__()` is used (typically via either a for or the `next()` builtin) then the result is `None`. Otherwise, if `send()` is used, then the result will be the value passed in to that method.
+
+**如果在 `generator` 函数结束前不再被使用**：Yield expressions are allowed anywhere in a `try` construct. If the generator is not resumed before it is finalized (by reaching a zero reference count or by being garbage collected), the generator-iterator’s `close()` method will be called, allowing any pending `finally` clauses to execute.
+
+**`generator` 函数结束**：When the underlying iterator is complete, the `value` attribute of the raised `StopIteration` instance becomes the `value` of the `yield` expression. It can be either set explicitly when raising `StopIteration`, or automatically when the sub-iterator is a `generator` (by returning a value from the sub-generator).
+
+The parentheses may be omitted when the `yield` expression is the sole expression on the right hand side of an assignment statement.
+
+### Generator-iterator methods
+
+This subsection describes the methods of a `generator` `iterator`. They can be used to control the execution of a generator function.
+
+Note that calling any of the generator methods below when the generator is already executing raises a `ValueError` exception.
+
+```python
+generator.__next__()
+```
+
+Starts the execution of a generator function or resumes it at the last executed `yield` expression. When a generator function is resumed with a `__next__()` method, the current `yield` expression always evaluates to `None`. The execution then continues to the next `yield` expression, where the generator is suspended again, and the value of the `expression_list` is returned to `__next__()`’s caller. If the generator exits without yielding another value, a `StopIteration` exception is raised.
+
+This method is normally called implicitly, e.g. by a `for` loop, or by the built-in `next()` function.
+
+```python
+generator.send(value)
+```
+
+Resumes the execution and “sends” a value into the generator function. The `value` argument becomes the result of the current yield expression. The `send()` method returns the next value yielded by the generator, or raises `StopIteration` if the generator exits without yielding another value. When `send()` is called to start the generator, it must be called with `None` as the argument, because there is no `yield` expression that could receive the value.
+
+```python
+generator.throw(type[, value[, traceback]])
+```
+
+Raises an exception of type `type` at the point where the generator was paused, and returns the next value yielded by the generator function. If the generator exits without yielding another value, a `StopIteration` exception is raised. If the generator function does not catch the passed-in exception, or raises a different exception, then that exception propagates to the caller.
+
+```python
+generator.close()
+```
+
+Raises a `GeneratorExit` at the point where the generator function was paused. If the generator function then exits gracefully, is already closed, or raises `GeneratorExit` (by not catching the exception), close returns to its caller. If the generator yields a value, a `RuntimeError` is raised. If the generator raises any other exception, it is propagated to the caller. `close()` does nothing if the generator has already exited due to an exception or normal exit.
+
+### 实例
+
+```python
+>>>
+>>> def echo(value=None):
+...     print("Execution starts when 'next()' is called for the first time.")
+...     try:
+...         while True:
+...             try:
+...                 value = (yield value)
+...             except Exception as e:
+...                 value = e
+...     finally:
+...         print("Don't forget to clean up when 'close()' is called.")
+...
+>>> generator = echo(1)
+>>> print(next(generator))
+Execution starts when 'next()' is called for the first time.
+1
+>>> print(next(generator))
+None
+>>> print(generator.send(2))
+2
+>>> generator.throw(TypeError, "spam")
+TypeError('spam',)
+>>> generator.close()
+Don't forget to clean up when 'close()' is called.
+```
+
 # 魔法函数
 
 # 异常处理
