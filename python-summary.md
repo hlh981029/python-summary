@@ -1963,6 +1963,58 @@ end of inner wrapper function.
 <b>Hello Toby!</b>
 ```
 
+### 多层装饰器
+
+```python
+# an example of python decorator
+def deco1(func):
+    print(1)
+    def wrapper1():
+        print(2)
+        func()
+        print(3)
+    print(4)
+    return wrapper1
+
+def deco2(func):
+    print(5)
+    def wrapper2():
+        print(6)
+        func()
+        print(7)
+    print(8)
+    return wrapper2
+
+@deco1
+@deco2
+def foo():
+    print('foo')
+
+
+if __name__ == '__main__':
+    foo()
+```
+
+运行结果：
+
+```
+5
+8
+1
+4
+2
+6
+foo
+7
+3
+```
+
+修饰器本质上就是一个函数，只不过它的传入参数同样是一个函数。因此，依次加了`deco1`和`deco2`两个装饰器的原函数`foo`实际上相当于`deco1(deco2(foo))`。
+
+明白了第1步后，下面进入这个复合函数。首先执行的是内层函数`deco2(foo)`。因此第一个打印值是`5`。接下来要注意，在`deco2`这个函数内定义了一个`wrapper2`函数，但是并没有类似于`wrapper2()`的语句，因此该函数内的语句并没有立即执行，而是作为了返回值。因此`wrapper2`内的3条语句作为输入参数传递到了`deco1`内。`wrapper2`函数内还有一行`print(8)`，因此第二个打印值为`8`。
+
+下一步是执行`deco1()`函数内容。与2类似，先打印出`1`和`4`，返回值为`wrapper1`。由于更外层没有装饰器，因此接下来就将执行`wrapper1`内的内容。第五个打印值为`2`。接着执行`func()`函数，注意此处`func()`表示的是`wrapper2`中的内容，因此跳到`wrapper2`中执行。第六个打印值为`6`。类似的，`wrapper2`中的`func()`为`foo()`，因此接着会输出`foo`。最后，回到wrapper2和`wrapper1`的最后一行，依次输出`7`和`3`。到这里，整个装饰器的运行过程结束。
+
 ### 错误的函数签名和文档
 
 装饰器装饰过的函数看上去名字没变，其实已经变了。

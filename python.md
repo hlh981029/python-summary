@@ -6,8 +6,6 @@
 - [ ] 描述器
 - [ ] 实例属性 类属性
 - [ ] 元类
-- [ ] 装饰器 闭包
-- [ ] 类装饰器 __call\_\_
 - [ ] os模块
 - [ ] 内建函数 sort reverse zip map
 - [ ] map reduce filter python 2 & 3
