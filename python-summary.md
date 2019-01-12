@@ -273,10 +273,11 @@ b'\xe4\xbd\xa0\xe5\xa5\xbd'
 >>> bytes.decode(b)
 '你好'
 ```
-<span id="str-index"></span>
-## 索引与截取
+<span id="index-and-slice"></span>
 
-| | |
+## 索引与切片
+
+| 语法 | 说明 |
 | --- | --- |
 | `s[i]` | `i`th item of `s`, origin 0 |
 | `s[i:j]` | slice of `s` from `i` to `j` |
@@ -364,8 +365,8 @@ Lists may be constructed in several ways:
 - Using the type constructor: `list()` or `list(iterable)`
 > The constructor builds a list whose items are the same and in the same order as iterable’s items. iterable may be either a sequence, a container that supports iteration, or an iterator object. If iterable is already a list, a copy is made and returned, similar to iterable`[:]`. For example, `list('abc')` returns `['a', 'b', 'c']` and `list( (1, 2, 3) )` returns `[1, 2, 3]`. If no argument is given, the constructor creates a new empty list, `[]`.
 
-## 索引与截取
-- 同[字符串的索引与截取](#str-index)
+## 索引与切片
+- 同[字符串的索引与切片](#index-and-slice)
 
 ## 删除
 
@@ -449,6 +450,9 @@ Tuples may be constructed in a number of ways:
 > The constructor builds a tuple whose items are the same and in the same order as iterable’s items. iterable may be either a sequence, a container that supports iteration, or an iterator object. If iterable is already a tuple, it is returned unchanged. For example, `tuple('abc')` returns `('a', 'b', 'c')` and `tuple( [1, 2, 3] )` returns `(1, 2, 3)`. If no argument is given, the constructor creates a new empty tuple, `()`.
 
 > Note that it is actually the comma which makes a tuple, not the parentheses. The parentheses are optional, except in the empty tuple case, or when they are needed to avoid syntactic ambiguity. For example, f(a, b, c) is a function call with three arguments, while f((a, b, c)) is a function call with a 3-tuple as the sole argument.
+
+## 索引与切片
+- 同[字符串的索引与切片](#index-and-slice)
 
 ## 修改
 
@@ -660,6 +664,178 @@ set ^ other ^ ...
 <tr><td><a href="http://www.runoob.com/python3/ref-set-pop.html" target="_blank">set.pop()</a></td><td>随机移除元素</td></tr>
 <tr><td><a href="http://www.runoob.com/python3/ref-set-clear.html" target="_blank">set.clear()</a></td><td>移除集合中的所有元素</td></tr>
 </tbody></table>
+
+# 控制流
+
+## `if` Statements
+
+```python
+>>> x = int(input("Please enter an integer: "))
+Please enter an integer: 42
+>>> if x < 0:
+...     x = 0
+...     print('Negative changed to zero')
+... elif x == 0:
+...     print('Zero')
+... elif x == 1:
+...     print('Single')
+... else:
+...     print('More')
+...
+More
+```
+
+There can be zero or more `elif` parts, and the `else` part is optional. The keyword `elif` is short for `else if`, and is useful to avoid excessive indentation. An `if … elif … elif …` sequence is a substitute for the switch or case statements found in other languages.
+
+## `for` Statements
+
+Python’s `for` statement iterates over the items of any sequence (a list or a string), in the order that they appear in the sequence. For example:
+
+```python
+>>> # Measure some strings:
+... words = ['cat', 'window', 'defenestrate']
+>>> for w in words:
+...     print(w, len(w))
+...
+cat 3
+window 6
+defenestrate 12
+```
+
+If you need to modify the sequence you are iterating over while inside the loop (for example to duplicate selected items), it is recommended that you first make a copy. Iterating over a sequence does not implicitly make a copy. The slice notation makes this especially convenient:
+
+```python
+>>> for w in words[:]:  # Loop over a slice copy of the entire list.
+...     if len(w) > 6:
+...         words.insert(0, w)
+...
+>>> words
+['defenestrate', 'cat', 'window', 'defenestrate']
+```
+
+With `for w in words:`, the example would attempt to create an infinite list, inserting defenestrate over and over again.
+
+## The `range()` Function
+
+If you do need to iterate over a sequence of numbers, the built-in function `range()` comes in handy. It generates arithmetic progressions:
+
+```python
+>>> for i in range(5):
+...     print(i)
+...
+0
+1
+2
+3
+4
+```
+
+The given end point is **never** part of the generated sequence; `range(10)` generates 10 values, the legal indices for items of a sequence of length 10. It is possible to let the range start at another number, or to specify a different increment (even negative; sometimes this is called the ‘step’):
+
+```python
+range(5, 10)
+   5, 6, 7, 8, 9
+
+range(0, 10, 3)
+   0, 3, 6, 9
+
+range(-10, -100, -30)
+  -10, -40, -70
+```
+
+To iterate over the indices of a sequence, you can combine `range()` and `len()` as follows:
+
+```python
+>>> a = ['Mary', 'had', 'a', 'little', 'lamb']
+>>> for i in range(len(a)):
+...     print(i, a[i])
+...
+0 Mary
+1 had
+2 a
+3 little
+4 lamb
+```
+
+A strange thing happens if you just print a range:
+
+```python
+>>> print(range(10))
+range(0, 10)
+```
+
+In many ways the object returned by `range()` behaves as if it is a list, but in fact it isn’t. It is an object which returns the successive items of the desired sequence when you iterate over it, but it doesn’t really make the list, thus saving space.
+
+We say such an object is `iterable`, that is, suitable as a target for functions and constructs that expect something from which they can obtain successive items until the supply is exhausted. We have seen that the for statement is such an iterator. The function `list()` is another; it creates lists from iterables:
+
+```python
+>>> list(range(5))
+[0, 1, 2, 3, 4]
+```
+
+## `break` and `continue` Statements, and `else` Clauses on Loops
+
+The `break` statement, like in C, breaks out of the innermost enclosing `for` or `while` loop.
+
+Loop statements may have an `else` clause; it is executed when the loop terminates through exhaustion of the list (with `for`) or when the condition becomes false (with `while`), **but not when the loop is terminated by a break statement**. This is exemplified by the following loop, which searches for prime numbers:
+
+```python
+>>> for n in range(2, 6):
+...     for x in range(2, n):
+...         if n % x == 0:
+...             print(n, 'equals', x, '*', n//x)
+...             break
+...     else:
+...         # loop fell through without finding a factor
+...         print(n, 'is a prime number')
+...
+2 is a prime number
+3 is a prime number
+4 equals 2 * 2
+5 is a prime number
+```
+
+When used with a loop, the `else` clause has more in common with the `else` clause of a `try` statement than it does that of if statements: a `try` statement’s `else` clause runs when no exception occurs, and a loop’s `else` clause runs when no `break` occurs.
+
+The `continue` statement, also borrowed from C, continues with the next iteration of the loop:
+
+```python
+>>> for num in range(2, 6):
+...     if num % 2 == 0:
+...         print("Found an even number", num)
+...         continue
+...     print("Found a number", num)
+Found an even number 2
+Found a number 3
+Found an even number 4
+Found a number 5
+```
+
+## `pass` Statements
+
+The `pass` statement does nothing. It can be used when a statement is required syntactically but the program requires no action. For example:
+
+```python
+>>> while True:
+...     pass  # Busy-wait for keyboard interrupt (Ctrl+C)
+...
+```
+
+This is commonly used for creating minimal classes:
+
+```python
+>>> class MyEmptyClass:
+...     pass
+...
+```
+
+Another place `pass` can be used is as a place-holder for a function or conditional body when you are working on new code, allowing you to keep thinking at a more abstract level. The pass is silently ignored:
+
+```python
+>>> def initlog(*args):
+...     pass   # Remember to implement this!
+...
+```
 
 # 函数
 
@@ -895,6 +1071,33 @@ TypeError: f() takes 2 positional arguments but 3 were given
 ## 参数组合
 在Python中定义函数，可以用必选参数、默认参数、可变参数、关键字参数和命名关键字参数，这5种参数都可以组合使用。但是请注意，参数定义的顺序必须是：必选参数、默认参数、可变参数、命名关键字参数和关键字参数。
 
+## Unpacking Argument Lists
+
+The reverse situation occurs when the arguments are already in a list or tuple but need to be unpacked for a function call requiring separate positional arguments. For instance, the built-in `range()` function expects separate start and stop arguments. If they are not available separately, write the function call with the *-operator to unpack the arguments out of a list or tuple:
+
+```python
+>>>
+>>> list(range(3, 6))            # normal call with separate arguments
+[3, 4, 5]
+>>> args = [3, 6]
+>>> list(range(*args))            # call with arguments unpacked from a list
+[3, 4, 5]
+```
+
+In the same fashion, dictionaries can deliver keyword arguments with the **-operator:
+
+```python
+>>>
+>>> def parrot(voltage, state='a stiff', action='voom'):
+...     print("-- This parrot wouldn't", action, end=' ')
+...     print("if you put", voltage, "volts through it.", end=' ')
+...     print("E's", state, "!")
+...
+>>> d = {"voltage": "four million", "state": "bleedin' demised", "action": "VOOM"}
+>>> parrot(**d)
+-- This parrot wouldn't VOOM if you put four million volts through it. E's bleedin' demised !
+```
+
 ## 匿名函数（Lambda 表达式）
 
 python 使用 lambda 来创建匿名函数。
@@ -1061,6 +1264,41 @@ outer()
 100
 ```
 
+This is an example demonstrating how to reference the different scopes and namespaces, and how `global` and `nonlocal` affect variable binding:
+```python
+def scope_test():
+    def do_local():
+        spam = "local spam"
+
+    def do_nonlocal():
+        nonlocal spam
+        spam = "nonlocal spam"
+
+    def do_global():
+        global spam
+        spam = "global spam"
+
+    spam = "test spam"
+    do_local()
+    print("After local assignment:", spam)
+    do_nonlocal()
+    print("After nonlocal assignment:", spam)
+    do_global()
+    print("After global assignment:", spam)
+
+scope_test()
+print("In global scope:", spam)
+```
+
+The output of the example code is:
+
+```python
+After local assignment: test spam
+After nonlocal assignment: nonlocal spam
+After global assignment: nonlocal spam
+In global scope: global spam
+```
+
 另外有一种特殊情况，假设下面这段代码被运行：
 
 ```python
@@ -1096,6 +1334,331 @@ test(a)
 
 # 类
 
+## 简介
+
+- 类(Class): 用来描述具有相同的属性和方法的对象的集合。它定义了该集合中每个对象所共有的属性和方法。对象是类的实例。
+- 方法：类中定义的函数。
+- 类变量：类变量在整个实例化的对象中是公用的。类变量定义在类中且在函数体之外。类变量通常不作为实例变量使用。
+- 数据成员：类变量或者实例变量用于处理类及其实例对象的相关的数据。
+- 方法重写：如果从父类继承的方法不能满足子类的需求，可以对其进行改写，这个过程叫方法的覆盖（override），也称为方法的重写。
+- 局部变量：定义在方法中的变量，只作用于当前实例的类。
+- 实例变量：在类的声明中，属性是用变量来表示的。这种变量就称为实例变量，是在类声明的内部但是在类的其他成员方法之外声明的。
+- 继承：即一个派生类（derived class）继承基类（base class）的字段和方法。继承也允许把一个派生类的对象作为一个基类对象对待。例如，有这样一个设计：一个Dog类型的对象派生自Animal类，这是模拟"是一个（is-a）"关系（例图，Dog是一个Animal）。
+- 实例化：创建一个类的实例，类的具体对象。
+- 对象：通过类定义的数据结构实例。对象包括两个数据成员（类变量和实例变量）和方法。
+
+## Class Definition Syntax
+
+```python
+class ClassName:
+    <statement-1>
+    .
+    .
+    .
+    <statement-N>
+```
+
+## Class Objects
+
+Class objects support two kinds of operations: attribute references（属性引用） and instantiation（实例化）.
+
+### Attribute References（属性引用）
+
+If the class definition looked like this:
+
+```python
+class MyClass:
+    i = 12345
+
+    def f(self):
+        return 'hello world'
+```
+
+then `MyClass.i` and `MyClass.f` are valid attribute references, returning an integer and a function object, respectively. Class attributes can also be assigned to, so you can change the value of `MyClass.i` by assignment.
+
+### Instantiation（实例化）
+
+Class instantiation uses function notation. Just pretend that the class object is a parameterless function that returns a new instance of the class. For example (assuming the above class):
+
+```python
+x = MyClass()
+```
+
+creates a new instance of the class and assigns this object to the local variable x.
+
+### 构造函数
+
+The instantiation operation (“calling” a class object) creates an empty object. Many classes like to create objects with instances customized to a specific initial state. Therefore a class may define a special method named `__init__()`, like this:
+
+```python
+def __init__(self):
+    self.data = []
+```
+
+When a class defines an `__init__()` method, class instantiation automatically invokes `__init__()` for the newly-created class instance.
+
+Of course, the `__init__()` method may have arguments for greater flexibility. In that case, arguments given to the class instantiation operator are passed on to `__init__()`. For example,
+
+```python
+>>>
+>>> class Complex:
+...     def __init__(self, realpart, imagpart):
+...         self.r = realpart
+...         self.i = imagpart
+...
+>>> x = Complex(3.0, -4.5)
+>>> x.r, x.i
+(3.0, -4.5)
+```
+
+## Instance Objects
+
+Now what can we do with instance objects? The only operations understood by instance objects are attribute references. There are two kinds of valid attribute names, data attributes（数据属性） and methods（方法）.
+
+data attributes correspond to “instance variables” in Smalltalk, and to “data members” in C++. Data attributes need not be declared; like local variables, they spring into existence when they are first assigned to. For example, if `x` is the instance of `MyClass` created above, the following piece of code will print the value 16, without leaving a trace:
+
+```python
+x.counter = 1
+while x.counter < 10:
+    x.counter = x.counter * 2
+print(x.counter)
+del x.counter
+```
+
+The other kind of instance attribute reference is a method. A method is a function that “belongs to” an object. (In Python, the term method is not unique to class instances: other object types can have methods as well. For example, list objects have methods called append, insert, remove, sort, and so on.)
+
+Valid method names of an instance object depend on its class. By definition, all attributes of a class that are function objects define corresponding methods of its instances. So in our example, `x.f` is a valid method reference, since `MyClass.f` is a function, but `x.i` is not, since `MyClass.i` is not. But `x.f` is not the same thing as `MyClass.f` — it is a method object, not a function object.
+
+调用方法时，实例将自己作为第一个参数：`x.f()` is exactly equivalent to `MyClass.f(x)`
+
+## Class and Instance Variables
+
+Generally speaking, instance variables are for data unique to each instance and class variables are for attributes and methods shared by all instances of the class:
+
+```python
+class Dog:
+
+    kind = 'canine'         # class variable shared by all instances
+
+    def __init__(self, name):
+        self.name = name    # instance variable unique to each instance
+
+>>> d = Dog('Fido')
+>>> e = Dog('Buddy')
+>>> d.kind                  # shared by all dogs
+'canine'
+>>> e.kind                  # shared by all dogs
+'canine'
+>>> d.name                  # unique to d
+'Fido'
+>>> e.name                  # unique to e
+'Buddy'
+```
+
+Shared data can have possibly surprising effects with involving mutable objects such as lists and dictionaries. For example, the tricks list in the following code should not be used as a class variable because just a single list would be shared by all `Dog` instances:
+
+```python
+class Dog:
+
+    tricks = []             # mistaken use of a class variable
+
+    def __init__(self, name):
+        self.name = name
+
+    def add_trick(self, trick):
+        self.tricks.append(trick)
+
+>>> d = Dog('Fido')
+>>> e = Dog('Buddy')
+>>> d.add_trick('roll over')
+>>> e.add_trick('play dead')
+>>> d.tricks                # unexpectedly shared by all dogs
+['roll over', 'play dead']
+```
+
+Correct design of the class should use an instance variable instead:
+
+```python
+class Dog:
+
+    def __init__(self, name):
+        self.name = name
+        self.tricks = []    # creates a new empty list for each dog
+
+    def add_trick(self, trick):
+        self.tricks.append(trick)
+
+>>> d = Dog('Fido')
+>>> e = Dog('Buddy')
+>>> d.add_trick('roll over')
+>>> e.add_trick('play dead')
+>>> d.tricks
+['roll over']
+>>> e.tricks
+['play dead']
+```
+
+## Random Remarks
+
+Often, the first argument of a method is called `self`. This is nothing more than a convention: the name `self` has absolutely no special meaning to Python.
+
+Any function object that is a class attribute defines a method for instances of that class. It is not necessary that the function definition is textually enclosed in the class definition: assigning a function object to a local variable in the class is also ok. For example:
+
+```python
+# Function defined outside the class
+def f1(self, x, y):
+    return min(x, x+y)
+
+class C:
+    f = f1
+
+    def g(self):
+        return 'hello world'
+
+    h = g
+```
+
+Methods may call other methods by using method attributes of the self argument:
+
+```python
+class Bag:
+    def __init__(self):
+        self.data = []
+
+    def add(self, x):
+        self.data.append(x)
+
+    def addtwice(self, x):
+        self.add(x)
+        self.add(x)
+```
+
+Each value is an object, and therefore has a class (also called its type). It is stored as `object.__class__`.
+
+## Inheritance
+
+```python
+class DerivedClassName(BaseClassName):
+    <statement-1>
+    .
+    .
+    .
+    <statement-N>
+```
+
+when the base class is defined in another module:
+
+```python
+class DerivedClassName(modname.BaseClassName):
+```
+
+attribute references: if a requested attribute is not found in the class, the search proceeds to look in the base class. This rule is applied recursively if the base class itself is derived from some other class.
+
+Method references are resolved as follows: the corresponding class attribute is searched, descending down the chain of base classes if necessary, and the method reference is valid if this yields a function object.
+
+Derived classes may override methods of their base classes. Because methods have no special privileges when calling other methods of the same object, a method of a base class that calls another method defined in the same base class may end up calling a method of a derived class that overrides it. (For C++ programmers: all methods in Python are effectively virtual.)
+
+An overriding method in a derived class may in fact want to extend rather than simply replace the base class method of the same name. There is a simple way to call the base class method directly: just call `BaseClassName.methodname(self, arguments)`.
+
+Python has two built-in functions that work with inheritance:
+
+- Use `isinstance()` to check an instance’s type: `isinstance(obj, int)` will be `True` only if `obj.__class__` is `int` or some class derived from `int`.
+- Use `issubclass()` to check class inheritance: `issubclass(bool, int)` is `True` since `bool` is a subclass of `int`. However, `issubclass(float, int)` is `False` since `float` is not a subclass of `int`.
+
+## Multiple Inheritance
+
+```python
+class DerivedClassName(Base1, Base2, Base3):
+    <statement-1>
+    .
+    .
+    .
+    <statement-N>
+```
+**太多不看版**：拓扑排序，每层都是从左至右，找到就停
+
+**这是假的**：For most purposes, in the simplest cases, you can think of the search for attributes inherited from a parent class as depth-first, left-to-right, not searching twice in the same class where there is an overlap in the hierarchy. Thus, if an attribute is not found in DerivedClassName, it is searched for in Base1, then (recursively) in the base classes of Base1, and if it was not found there, it was searched for in Base2, and so on.
+
+**这才是真的**：In fact, it is slightly more complex than that; the method resolution order changes dynamically to support cooperative calls to super(). This approach is known in some other multiple-inheritance languages as call-next-method and is more powerful than the super call found in single-inheritance languages.
+
+Dynamic ordering is necessary because all cases of multiple inheritance exhibit one or more diamond relationships (where at least one of the parent classes can be accessed through multiple paths from the bottommost class). For example, all classes inherit from object, so any case of multiple inheritance provides more than one path to reach object. To keep the base classes from being accessed more than once, the dynamic algorithm linearizes the search order in a way that preserves the left-to-right ordering specified in each class, that calls each parent only once, and that is monotonic (meaning that a class can be subclassed without affecting the precedence order of its parents). Taken together, these properties make it possible to design reliable and extensible classes with multiple inheritance.
+
+## Private Variables
+
+“Private” instance variables that cannot be accessed except from inside an object don’t exist in Python. However, there is a convention that is followed by most Python code: a name prefixed with an underscore (e.g. `_spam`) should be treated as a non-public part of the API (whether it is a function, a method or a data member).
+
+- 一个下划线是protected，并不会进行后面的操作
+
+Since there is a valid use-case for class-private members (namely to avoid name clashes of names with names defined by subclasses), there is limited support for such a mechanism, called name mangling. Any identifier of the form `__spam` (at least two leading underscores, at most one trailing underscore) is textually replaced with `_classname__spam`, where classname is the current class name with leading underscore(s) stripped. This mangling is done without regard to the syntactic position of the identifier, as long as it occurs within the definition of a class.
+
+Name mangling is helpful for letting subclasses override methods without breaking intraclass method calls. For example:
+
+```python
+class Father:
+    def __init__(self, value):
+        self.value = value
+
+    def __print(self):
+        print('Father', self.value)
+
+class Child(Father):
+    def __print(self):
+        print('Child', self.value)
+
+    def father_print(self):
+        self._Father__print()
+
+    def child_print(self):
+        self.__print()
+
+c = Child(10)
+c.child_print()
+c.father_print()
+c._Child__print()
+c._Father__print()
+print(dir(Father))
+print(dir(Child))
+print(dir(c))
+```
+
+运行结果：
+
+```python
+Child 10
+Father 10
+Child 10
+Father 10
+['_Father__print', ... ]
+['_Child__print', '_Father__print', ... , 'child_print', 'father_print']
+['_Child__print', '_Father__print', ... , 'child_print', 'father_print', 'value']
+```
+
+上面这个例子告诉我们，其实python的私有属性就是改了名字，让原来的名字在外面访问不到。
+
+Note that the mangling rules are designed mostly to avoid accidents; it still is possible to access or modify a variable that is considered private. This can even be useful in special circumstances, such as in the debugger.
+
+Notice that code passed to `exec()` or `eval()` does not consider the classname of the invoking class to be the current class; this is similar to the effect of the global statement, the effect of which is likewise restricted to code that is byte-compiled together. The same restriction applies to `getattr()`, `setattr()` and `delattr()`, as well as when referencing `__dict__` directly.
+
+## Odds and Ends
+
+Sometimes it is useful to have a data type similar to the Pascal “record” or C “struct”, bundling together a few named data items. An empty class definition will do nicely:
+
+```python
+class Employee:
+    pass
+
+john = Employee()  # Create an empty employee record
+
+# Fill the fields of the record
+john.name = 'John Doe'
+john.dept = 'computer lab'
+john.salary = 1000
+```
+
+A piece of Python code that expects a particular abstract data type can often be passed a class that emulates the methods of that data type instead. For instance, if you have a function that formats some data from a file object, you can define a class with methods `read()` and `readline()` that get the data from a string buffer instead, and pass it as an argument.
+
+Instance method objects have attributes, too: `m.__self__` is the instance object with the method `m()`, and `m.__func__` is the function object corresponding to the method.
+
 # 装饰器
 
 # 迭代器
@@ -1105,3 +1668,5 @@ test(a)
 # 魔法函数
 
 # 异常处理
+
+# 拷贝
