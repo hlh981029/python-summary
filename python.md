@@ -3,7 +3,6 @@
 
 
 - [ ] os模块
-- [ ] 魔法函数
 - [ ] 内建函数 sort reverse zip map
 - [ ] map reduce filter python 2 & 3
 - [ ] 正则表达式

@@ -2670,6 +2670,434 @@ Note Unlike Java abstract methods, these abstract methods may have an implementa
 
 # 魔法函数
 
+A class can implement certain operations that are invoked by special syntax (such as arithmetic operations or subscripting and slicing) by defining methods with special names. This is Python’s approach to operator overloading, allowing classes to define their own behavior with respect to language operators. For instance, if a class defines a method named `__getitem__()`, and `x` is an instance of this class, then `x[i]` is roughly equivalent to `type(x).__getitem__(x, i)`. Except where mentioned, attempts to execute an operation raise an exception when no appropriate method is defined (typically `AttributeError` or `TypeError`).
+
+Setting a special method to `None` indicates that the corresponding operation is not available. For example, if a class sets `__iter__()` to `None`, the class is not iterable, so calling `iter()` on its instances will raise a `TypeError` (without falling back to `__getitem__()`).
+
+## Basic customization
+
+```python
+object.__new__(cls[, ...])
+```
+
+Called to create a new instance of class `cls. __new__()` is a static method (special-cased so you need not declare it as such) that takes the class of which an instance was requested as its first argument. The remaining arguments are those passed to the object constructor expression (the call to the class). The return value of `__new__()` should be the new object instance (usually an instance of `cls`).
+
+Typical implementations create a new instance of the class by invoking the superclass’s `__new__()` method using `super().__new__(cls[, ...])` with appropriate arguments and then modifying the newly-created instance as necessary before returning it.
+
+If `__new__()` returns an instance of `cls`, then the new instance’s `__init__()` method will be invoked like `__init__(self[, ...])`, where self is the new instance and the remaining arguments are the same as were passed to `__new__()`.
+
+If `__new__()` does not return an instance of `cls`, then the new instance’s `__init__()` method will not be invoked.
+
+`__new__()` is intended mainly to allow subclasses of immutable types (like `int`, `str`, or `tuple`) to customize instance creation. It is also commonly overridden in custom metaclasses in order to customize class creation.
+
+```python
+object.__init__(self[, ...])
+```
+
+Called after the instance has been created (by `__new__()`), but before it is returned to the caller. The arguments are those passed to the class constructor expression. If a base class has an `__init__()` method, the derived class’s `__init__()` method, if any, must explicitly call it to ensure proper initialization of the base class part of the instance; for example: `super().__init__([args...])`.
+
+Because `__new__()` and `__init__()` work together in constructing objects (`__new__()` to create it, and `__init__()` to customize it), no non-None value may be returned by `__init__()`; doing so will cause a `TypeError` to be raised at runtime.
+
+```python
+object.__del__(self)
+```
+
+Called when the instance is about to be destroyed. This is also called a finalizer or (improperly) a destructor. If a base class has a `__del__()` method, the derived class’s `__del__()` method, if any, must explicitly call it to ensure proper deletion of the base class part of the instance.
+
+```python
+object.__repr__(self)
+```
+
+Called by the `repr()` built-in function to compute the “official” string representation of an object. If at all possible, this should look like a valid Python expression that could be used to recreate an object with the same value (given an appropriate environment). If this is not possible, a string of the form `<...some useful description...>` should be returned. The return value must be a string object. If a class defines `__repr__()` but not `__str__()`, then `__repr__()` is also used when an “informal” string representation of instances of that class is required.
+
+This is typically used for debugging, so it is important that the representation is information-rich and unambiguous.
+
+```python
+object.__str__(self)
+```
+
+Called by `str(object)` and the built-in functions `format()` and `print()` to compute the “informal” or nicely printable string representation of an object. The return value must be a string object.
+
+This method differs from `object.__repr__()` in that there is no expectation that `__str__()` return a valid Python expression: a more convenient or concise representation can be used.
+
+The default implementation defined by the built-in type object calls `object.__repr__()`.
+
+```python
+object.__bytes__(self)
+```
+
+Called by bytes to compute a byte-string representation of an object. This should return a bytes object.
+
+```python
+object.__lt__(self, other)
+object.__le__(self, other)
+object.__eq__(self, other)
+object.__ne__(self, other)
+object.__gt__(self, other)
+object.__ge__(self, other)
+```
+
+These are the so-called “rich comparison” methods. The correspondence between operator symbols and method names is as follows:
+- `x<y` calls `x.__lt__(y)`
+- `x<=y` calls `x.__le__(y)`
+- `x==y` calls `x.__eq__(y)`
+- `x!=y` calls `x.__ne__(y)`
+- `x>y` calls `x.__gt__(y)`
+- `x>=y` calls `x.__ge__(y)`
+
+A rich comparison method may return the singleton `NotImplemented` if it does not implement the operation for a given pair of arguments. By convention, `False` and `True` are returned for a successful comparison. However, these methods can return any value, so if the comparison operator is used in a Boolean context (e.g., in the condition of an if statement), Python will call `bool()` on the value to determine if the result is true or false.
+
+By default, `__ne__()` delegates to `__eq__()` and inverts the result unless it is `NotImplemented`. There are no other implied relationships among the comparison operators, for example, the truth of (`x<y or x==y`) does not imply `x<=y`.
+
+```python
+object.__hash__(self)
+```
+
+Called by built-in function `hash()` and for operations on members of hashed collections including `set`, `frozenset`, and `dict`. `__hash__()` should return an integer. The only required property is that objects which compare equal have the same hash value; it is advised to mix together the hash values of the components of the object that also play a part in comparison of objects by packing them into a tuple and hashing the tuple. Example:
+
+```python
+def __hash__(self):
+    return hash((self.name, self.nick, self.color))
+```
+
+If a class does not define an `__eq__()` method it should not define a `__hash__()` operation either; if it defines `__eq__()` but not `__hash__()`, its instances will not be usable as items in hashable collections. If a class defines mutable objects and implements an `__eq__()` method, it should not implement `__hash__()`, since the implementation of hashable collections requires that a key’s hash value is immutable (if the object’s hash value changes, it will be in the wrong hash bucket).
+
+User-defined classes have `__eq__()` and `__hash__()` methods by default; with them, all objects compare unequal (except with themselves) and `x.__hash__()` returns an appropriate value such that `x == y` implies both that x is y and hash(x) == hash(y).
+
+A class that overrides `__eq__()` and does not define `__hash__()` will have its `__hash__()` implicitly set to `None`. When the `__hash__()` method of a class is `None`, instances of the class will raise an appropriate `TypeError` when a program attempts to retrieve their hash value, and will also be correctly identified as unhashable when checking `isinstance(obj, collections.abc.Hashable)`.
+
+```python
+object.__bool__(self)
+```
+
+Called to implement truth value testing and the built-in operation `bool()`; should return `False` or `True`. When this method is not defined, `__len__()` is called, if it is defined, and the object is considered true if its result is nonzero. If a class defines neither `__len__()` nor `__bool__()`, all its instances are considered true.
+
+## Customizing attribute access
+
+The following methods can be defined to customize the meaning of attribute access (use of, assignment to, or deletion of x.name) for class instances.
+
+```python
+object.__getattr__(self, name)
+```
+
+Called when the default attribute access fails with an `AttributeError` (either `__getattribute__()` raises an `AttributeError` because name is not an instance attribute or an attribute in the class tree for self; or `__get__()` of a name property raises `AttributeError`). This method should either return the (computed) attribute value or raise an `AttributeError` exception.
+
+Note that if the attribute is found through the normal mechanism, `__getattr__()` is not called. (This is an intentional asymmetry between `__getattr__()` and `__setattr__()`.) This is done both for efficiency reasons and because otherwise `__getattr__()` would have no way to access other attributes of the instance. Note that at least for instance variables, you can fake total control by not inserting any values in the instance attribute dictionary (but instead inserting them in another object). See the __getattribute__() method below for a way to actually get total control over attribute access.
+
+```python
+object.__getattribute__(self, name)
+```
+
+Called unconditionally to implement attribute accesses for instances of the class. If the class also defines `__getattr__()`, the latter will not be called unless `__getattribute__()` either calls it explicitly or raises an `AttributeError`. This method should return the (computed) attribute value or raise an `AttributeError` exception. In order to avoid infinite recursion in this method, its implementation should always call the base class method with the same name to access any attributes it needs, for example, `object.__getattribute__(self, name)`.
+
+```python
+object.__setattr__(self, name, value)
+```
+
+Called when an attribute assignment is attempted. This is called instead of the normal mechanism (i.e. store the value in the instance dictionary). name is the attribute name, value is the value to be assigned to it.
+
+If `__setattr__()` wants to assign to an instance attribute, it should call the base class method with the same name, for example, `object.__setattr__(self, name, value)`.
+
+```python
+object.__delattr__(self, name)
+```
+
+Like `__setattr__()` but for attribute deletion instead of assignment. This should only be implemented if `del obj.name` is meaningful for the object.
+
+```python
+object.__dir__(self)
+```
+
+Called when `dir()` is called on the object. A sequence must be returned. `dir()` converts the returned sequence to a list and sorts it.
+
+### Customizing module attribute access
+
+Special names `__getattr__` and `__dir__` can be also used to customize access to module attributes. The `__getattr__` function at the module level should accept one argument which is the name of an attribute and return the computed value or raise an `AttributeError`. If an attribute is not found on a module object through the normal lookup, i.e. `object.__getattribute__()`, then `__getattr__` is searched in the module `__dict__` before raising an `AttributeError`. If found, it is called with the attribute name and the result is returned.
+
+The `__dir__` function should accept no arguments, and return a list of strings that represents the names accessible on module. If present, this function overrides the standard `dir()` search on a module.
+
+### `__slots__`
+
+`__slots__` allow us to explicitly declare data members (like properties) and deny the creation of `__dict__` and `__weakref__` (unless explicitly declared in `__slots__` or available in a parent.)
+
+The space saved over using `__dict__` can be significant.
+
+```python
+object.__slots__
+```
+
+This class variable can be assigned a string, iterable, or sequence of strings with variable names used by instances. `__slots__` reserves space for the declared variables and prevents the automatic creation of `__dict__` and `__weakref__` for each instance.
+
+- When inheriting from a class without `__slots__`, the `__dict__` and `__weakref__` attribute of the instances will always be accessible.
+- Without a `__dict__` variable, instances cannot be assigned new variables not listed in the `__slots__` definition. Attempts to assign to an unlisted variable name raises `AttributeError`. If dynamic assignment of new variables is desired, then add '`__dict__`' to the sequence of strings in the `__slots__` declaration.
+- `__slots__` are implemented at the class level by creating descriptors (Implementing Descriptors) for each variable name. As a result, class attributes cannot be used to set default values for instance variables defined by `__slots__`; otherwise, the class attribute would overwrite the descriptor assignment.
+- The action of a `__slots__` declaration is not limited to the class where it is defined. `__slots__` declared in parents are available in child classes. However, child subclasses will get a `__dict__` and `__weakref__` unless they also define `__slots__` (which should only contain names of any additional slots).
+- If a class defines a slot also defined in a base class, the instance variable defined by the base class slot is inaccessible (except by retrieving its descriptor directly from the base class).
+- Any non-string iterable may be assigned to `__slots__`. Mappings may also be used; however, in the future, special meaning may be assigned to the values corresponding to each key.
+- Multiple inheritance with multiple slotted parent classes can be used, but only one parent is allowed to have attributes created by slots (the other bases must have empty slot layouts) - violations raise `TypeError`.
+
+## Emulating callable objects
+
+```python
+object.__call__(self[, args...])
+```
+
+Called when the instance is “called” as a function; if this method is defined, `x(arg1, arg2, ...)` is a shorthand for `x.__call__(arg1, arg2, ...)`.
+
+## Emulating container types
+
+The following methods can be defined to implement container objects. Containers usually are sequences (such as lists or tuples) or mappings (like dictionaries), but can represent other containers as well. The first set of methods is used either to emulate a sequence or to emulate a mapping; the difference is that for a sequence, the allowable keys should be the integers k for which 0 <= k < N where N is the length of the sequence, or slice objects, which define a range of items. 
+
+It is also recommended that mappings provide the methods `keys()`, `values()`, `items()`, `get()`, `clear()`, `setdefault()`, `pop()`, `popitem()`, `copy()`, and `update()` behaving similar to those for Python’s standard dictionary objects. 
+
+Mutable sequences should provide methods `append(), count(), index(), extend(), insert(), pop(), remove(), reverse() and sort()`, like Python standard list objects.
+
+Finally, sequence types should implement addition (meaning concatenation) and multiplication (meaning repetition) by defining the methods `__add__(), __radd__(), __iadd__(), __mul__(), __rmul__() and __imul__()` described below; they should not define other numerical operators.
+
+It is recommended that both mappings and sequences implement the `__contains__()` method to allow efficient use of the in operator; for mappings, in should search the mapping’s keys; for sequences, it should search through the values.
+
+It is further recommended that both mappings and sequences implement the `__iter__()` method to allow efficient iteration through the container; for mappings, `__iter__()` should be the same as `keys()`; for sequences, it should iterate through the values.
+
+```python
+object.__len__(self)
+```
+
+Called to implement the built-in function `len()`. Should return the length of the object, an integer >= 0. Also, an object that doesn’t define a `__bool__()` method and whose `__len__()` method returns zero is considered to be false in a Boolean context.
+
+Note Slicing is done exclusively with the following three methods. A call like
+
+```python
+a[1:2] = b
+```
+
+is translated to
+
+```python
+a[slice(1, 2, None)] = b
+```
+
+and so forth. Missing slice items are always filled in with None.
+
+```python
+object.__getitem__(self, key)
+```
+
+Called to implement evaluation of `self[key]`. For sequence types, the accepted keys should be integers and slice objects. Note that the special interpretation of negative indexes (if the class wishes to emulate a sequence type) is up to the `__getitem__()` method.
+
+```python
+object.__setitem__(self, key, value)
+```
+
+Called to implement assignment to `self[key]`.
+
+```python
+object.__delitem__(self, key)
+```
+
+Called to implement deletion of `self[key]`.
+
+```python
+object.__iter__(self)
+```
+
+This method is called when an iterator is required for a container. This method should return a new iterator object that can iterate over all the objects in the container.
+
+Iterator objects also need to implement this method; they are required to return themselves.
+
+```python
+object.__reversed__(self)
+```
+
+Called (if present) by the `reversed()` built-in to implement reverse iteration. It should return a new iterator object that iterates over all the objects in the container in reverse order.
+
+If the `__reversed__()` method is not provided, the `reversed()` built-in will fall back to using the sequence protocol (`__len__() and __getitem__()`).
+
+The membership test operators (`in` and `not in`) are normally implemented as an iteration through a sequence. However, container objects can supply the following special method with a more efficient implementation, which also does not require the object be a sequence.
+
+```python
+object.__contains__(self, item)
+```
+
+Called to implement membership test operators. Should return true if item is in self, false otherwise.
+
+For objects that don’t define `__contains__()`, the membership test first tries iteration via `__iter__()`, then the old sequence iteration protocol via `__getitem__()`.
+
+## Emulating numeric types
+
+The following methods can be defined to emulate numeric objects. Methods corresponding to operations that are not supported by the particular kind of number implemented (e.g., bitwise operations for non-integral numbers) should be left undefined.
+
+```python
+object.__add__(self, other)
+object.__sub__(self, other)
+object.__mul__(self, other)
+object.__matmul__(self, other)
+object.__truediv__(self, other)
+object.__floordiv__(self, other)
+object.__mod__(self, other)
+object.__divmod__(self, other)
+object.__pow__(self, other[, modulo])
+object.__lshift__(self, other)
+object.__rshift__(self, other)
+object.__and__(self, other)
+object.__xor__(self, other)
+object.__or__(self, other)
+```
+
+```
+These methods are called to implement the binary arithmetic operations (+, -, *, @, /, //, %, divmod(), pow(), **, <<, >>, &, ^, |). For instance, to evaluate the expression x + y, where x is an instance of a class that has an __add__() method, x.__add__(y) is called. The __divmod__() method should be the equivalent to using __floordiv__() and __mod__(); it should not be related to __truediv__(). Note that __pow__() should be defined to accept an optional third argument if the ternary version of the built-in pow() function is to be supported.
+```
+
+If one of those methods does not support the operation with the supplied arguments, it should return `NotImplemented`.
+
+```python
+object.__radd__(self, other)
+object.__rsub__(self, other)
+object.__rmul__(self, other)
+object.__rmatmul__(self, other)
+object.__rtruediv__(self, other)
+object.__rfloordiv__(self, other)
+object.__rmod__(self, other)
+object.__rdivmod__(self, other)
+object.__rpow__(self, other)
+object.__rlshift__(self, other)
+object.__rrshift__(self, other)
+object.__rand__(self, other)
+object.__rxor__(self, other)
+object.__ror__(self, other)
+```
+
+```
+These methods are called to implement the binary arithmetic operations (+, -, *, @, /, //, %, divmod(), pow(), **, <<, >>, &, ^, |) with reflected (swapped) operands. These functions are only called if the left operand does not support the corresponding operation and the operands are of different types. For instance, to evaluate the expression x - y, where y is an instance of a class that has an __rsub__() method, y.__rsub__(x) is called if x.__sub__(y) returns NotImplemented.
+```
+
+Note that ternary pow() will not try calling `__rpow__()` (the coercion rules would become too complicated).
+
+Note If the right operand’s type is a subclass of the left operand’s type and that subclass provides the reflected method for the operation, this method will be called before the left operand’s non-reflected method. This behavior allows subclasses to override their ancestors’ operations.
+
+```python
+object.__iadd__(self, other)
+object.__isub__(self, other)
+object.__imul__(self, other)
+object.__imatmul__(self, other)
+object.__itruediv__(self, other)
+object.__ifloordiv__(self, other)
+object.__imod__(self, other)
+object.__ipow__(self, other[, modulo])
+object.__ilshift__(self, other)
+object.__irshift__(self, other)
+object.__iand__(self, other)
+object.__ixor__(self, other)
+object.__ior__(self, other)
+```
+
+```
+These methods are called to implement the augmented arithmetic assignments (+=, -=, *=, @=, /=, //=, %=, **=, <<=, >>=, &=, ^=, |=). These methods should attempt to do the operation in-place (modifying self) and return the result (which could be, but does not have to be, self). If a specific method is not defined, the augmented assignment falls back to the normal methods. For instance, if x is an instance of a class with an __iadd__() method, x += y is equivalent to x = x.__iadd__(y) . Otherwise, x.__add__(y) and y.__radd__(x) are considered, as with the evaluation of x + y..
+```
+
+```python
+object.__neg__(self)
+object.__pos__(self)
+object.__abs__(self)
+object.__invert__(self)
+```
+
+Called to implement the unary arithmetic operations (`-, +, abs() and ~`).
+
+```python
+object.__complex__(self)
+object.__int__(self)
+object.__float__(self)
+```
+
+Called to implement the built-in functions `complex(), int() and float()`. Should return a value of the appropriate type.
+
+```python
+object.__index__(self)
+```
+
+Called to implement `operator.index()`, and whenever Python needs to losslessly convert the numeric object to an integer object (such as in slicing, or in the built-in `bin(), hex() and oct()` functions). Presence of this method indicates that the numeric object is an integer type. Must return an integer.
+
+Note In order to have a coherent integer type class, when `__index__()` is defined `__int__()` should also be defined, and both should return the same value.
+
+```python
+object.__round__(self[, ndigits])
+object.__trunc__(self)
+object.__floor__(self)
+object.__ceil__(self)
+```
+
+Called to implement the built-in function `round()` and math functions `trunc(), floor() and ceil()`. Unless ndigits is passed to `__round__()` all these methods should return the value of the object truncated to an Integral (typically an int).
+
+If `__int__()` is not defined then the built-in function int() falls back to `__trunc__()`.
+
+### Special method lookup
+
+For custom classes, implicit invocations of special methods are only guaranteed to work correctly if defined on an object’s type, not in the object’s instance dictionary. That behaviour is the reason why the following code raises an exception:
+
+```python
+>>>
+>>> class C:
+...     pass
+...
+>>> c = C()
+>>> c.__len__ = lambda: 5
+>>> len(c)
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+TypeError: object of type 'C' has no len()
+```
+
+The rationale behind this behaviour lies with a number of special methods such as `__hash__()` and `__repr__()` that are implemented by all objects, including type objects. If the implicit lookup of these methods used the conventional lookup process, they would fail when invoked on the type object itself:
+
+```python
+>>>
+>>> 1 .__hash__() == hash(1)
+True
+>>> int.__hash__() == hash(int)
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+TypeError: descriptor '__hash__' of 'int' object needs an argument
+```
+
+Incorrectly attempting to invoke an unbound method of a class in this way is sometimes referred to as ‘metaclass confusion’, and is avoided by bypassing the instance when looking up special methods:
+
+```python
+>>>
+>>> type(1).__hash__(1) == hash(1)
+True
+>>> type(int).__hash__(int) == hash(int)
+True
+```
+
+In addition to bypassing any instance attributes in the interest of correctness, implicit special method lookup generally also bypasses the `__getattribute__()` method even of the object’s metaclass:
+
+```python
+>>>
+>>> class Meta(type):
+...     def __getattribute__(*args):
+...         print("Metaclass getattribute invoked")
+...         return type.__getattribute__(*args)
+...
+>>> class C(object, metaclass=Meta):
+...     def __len__(self):
+...         return 10
+...     def __getattribute__(*args):
+...         print("Class getattribute invoked")
+...         return object.__getattribute__(*args)
+...
+>>> c = C()
+>>> c.__len__()                 # Explicit lookup via instance
+Class getattribute invoked
+10
+>>> type(c).__len__(c)          # Explicit lookup via type
+Metaclass getattribute invoked
+10
+>>> len(c)                      # Implicit lookup
+10
+```
+
+Bypassing the `__getattribute__()` machinery in this fashion provides significant scope for speed optimisations within the interpreter, at the cost of some flexibility in the handling of special methods (the special method must be set on the class object itself in order to be consistently invoked by the interpreter).
+
 # 元类
 
 ## type()
