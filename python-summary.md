@@ -3785,19 +3785,19 @@ It is sometimes tempting to change a list while you are looping over it; however
 
 ## 属性相关
 
-### getattr(object, name[, default])
+### `getattr(object, name[, default])`
 Return the value of the named attribute of `object`. `name` must be a string. If the string is the name of one of the object’s attributes, the result is the value of that attribute. For example, `getattr(x, 'foobar')` is equivalent to `x.foobar`. If the named attribute does not exist, default is returned if provided, otherwise `AttributeError` is raised.
 
-### setattr(object, name, value)
+### `setattr(object, name, value)`
 This is the counterpart of `getattr()`. The arguments are an object, a string and an arbitrary value. The string may name an existing attribute or a new attribute. The function assigns the value to the attribute, provided the object allows it. For example, `setattr(x, 'foobar', 123)` is equivalent to `x.foobar = 123`.
 
-### delattr(object, name)
+### `delattr(object, name)`
 This is a relative of `setattr()`. The arguments are an object and a string. The string must be the name of one of the object’s attributes. The function deletes the named attribute, provided the object allows it. For example, `delattr(x, 'foobar')` is equivalent to del `x.foobar`.
 
-### hasattr(object, name)
+### `hasattr(object, name)`
 The arguments are an object and a string. The result is `True` if the string is the name of one of the object’s attributes, `False` if not. (This is implemented by calling `getattr(object, name)` and seeing whether it raises an AttributeError or not.)
 
-### dir([object])
+### `dir([object])`
 Without arguments, return the list of names in the current local scope. With an argument, attempt to return a list of valid attributes for that object.
 
 If the object has a method named `__dir__()`, this method will be called and must return the list of attributes. This allows objects that implement a custom `__getattr__()` or `__getattribute__()` function to customize the way `dir()` reports their attributes.
@@ -3829,37 +3829,37 @@ The resulting list is sorted alphabetically. For example:
 ['area', 'location', 'perimeter']
 ```
 
-### globals()
+### `globals()`
 Return a dictionary representing the current global symbol table. This is always the dictionary of the current module (inside a function or method, this is the module where it is defined, not the module from which it is called).
 
-### locals()
+### `locals()`
 Update and return a dictionary representing the current local symbol table. Free variables are returned by `locals()` when it is called in function blocks, but not in class blocks.
 
-### vars([object])
+### `vars([object])`
 Return the `__dict__` attribute for a module, class, instance, or any other object with a `__dict__` attribute.
 
 Without an argument, `vars()` acts like `locals()`. Note, the locals dictionary is only useful for reads since updates to the locals dictionary are ignored.
 
 ## 迭代相关
 
-### sum(iterable[, start])
-Sums start and the items of an iterable from left to right and returns the total. start defaults to 0. The iterable’s items are normally numbers, and the start value is not allowed to be a string.The preferred, fast way to concatenate a sequence of strings is by calling ''.join(sequence).
+### `sum(iterable[, start])`
+Sums start and the items of an iterable from left to right and returns the total. start defaults to 0. The iterable’s items are normally numbers, and the start value is not allowed to be a string.The preferred, fast way to concatenate a sequence of strings is by calling `''.join(sequence)`.
 
-### sorted(iterable, *, key=None, reverse=False)
+### `sorted(iterable, *, key=None, reverse=False)`
 Return a new sorted list from the items in iterable.
 
 Has two optional arguments which must be specified as keyword arguments.
 
-key specifies a function of one argument that is used to extract a comparison key from each element in iterable (for example, key=str.lower). The default value is None (compare the elements directly).
+key specifies a function of one argument that is used to extract a comparison key from each element in iterable (for example, `key=str.lower`). The default value is `None` (compare the elements directly).
 
-reverse is a boolean value. If set to True, then the list elements are sorted as if each comparison were reversed.
+reverse is a boolean value. If set to `True`, then the list elements are sorted as if each comparison were reversed.
 
-The built-in sorted() function is guaranteed to be stable. A sort is stable if it guarantees not to change the relative order of elements that compare equal — this is helpful for sorting in multiple passes (for example, sort by department, then by salary grade).
+The built-in `sorted()` function is guaranteed to be stable. A sort is stable if it guarantees not to change the relative order of elements that compare equal — this is helpful for sorting in multiple passes (for example, sort by department, then by salary grade).
 
-### reversed(seq)
+### `reversed(seq)`
 Return a reverse iterator. seq must be an object which has a `__reversed__()` method or supports the sequence protocol (the `__len__()` method and the `__getitem__()` method with integer arguments starting at 0).
 
-### enumerate(iterable, start=0)
+### `enumerate(iterable, start=0)`
 Return an enumerate object. iterable must be a sequence, an iterator, or some other object which supports iteration. The `__next__()` method of the iterator returned by enumerate() returns a tuple containing a count (from start which defaults to 0) and the values obtained from iterating over iterable.
 
 ```python
@@ -3880,17 +3880,7 @@ def enumerate(sequence, start=0):
         n += 1
 ```
 
-### map(function, iterable, ...)
-Return an iterator that applies function to every item of iterable, yielding the results. If additional iterable arguments are passed, function must take that many arguments and is applied to the items from all iterables in parallel. With multiple iterables, the iterator stops when the shortest iterable is exhausted. 
-
-### filter(function, iterable)
-Construct an iterator from those elements of iterable for which function returns true. iterable may be either a sequence, a container which supports iteration, or an iterator. If function is None, the identity function is assumed, that is, all elements of iterable that are false are removed.
-
-Note that filter(function, iterable) is equivalent to the generator expression (item for item in iterable if function(item)) if function is not None and (item for item in iterable if item) if function is None.
-
-See itertools.filterfalse() for the complementary function that returns elements of iterable for which function returns false.
-
-### zip(*iterables)
+### `zip(*iterables)`
 Make an iterator that aggregates elements from each of the iterables.
 
 Returns an iterator of tuples, where the i-th tuple contains the i-th element from each of the argument sequences or iterables. The iterator stops when the shortest input iterable is exhausted. With a single iterable argument, it returns an iterator of 1-tuples. With no arguments, it returns an empty iterator. Equivalent to:
@@ -3912,9 +3902,9 @@ def zip(*iterables):
 
 The left-to-right evaluation order of the iterables is guaranteed. This makes possible an idiom for clustering a data series into n-length groups using `zip(*[iter(s)]*n)`. This repeats the same iterator n times so that each output tuple has the result of n calls to the iterator. This has the effect of dividing the input into n-length chunks.
 
-zip() should only be used with unequal length inputs when you don’t care about trailing, unmatched values from the longer iterables. If those values are important, use itertools.zip_longest() instead.
+`zip()` should only be used with unequal length inputs when you don’t care about trailing, unmatched values from the longer iterables.
 
-zip() in conjunction with the * operator can be used to unzip a list:
+`zip()` in conjunction with the `*` operator can be used to unzip a list:
 
 ```python
 >>>
@@ -3928,10 +3918,18 @@ zip() in conjunction with the * operator can be used to unzip a list:
 True
 ```
 
+### `map(function, iterable, ...)`
+Return an iterator that applies function to every item of iterable, yielding the results. If additional iterable arguments are passed, function must take that many arguments and is applied to the items from all iterables in parallel. With multiple iterables, the iterator stops when the shortest iterable is exhausted. 
+
+### `filter(function, iterable)`
+Construct an iterator from those elements of iterable for which function returns true. iterable may be either a sequence, a container which supports iteration, or an iterator. If function is None, the identity function is assumed, that is, all elements of iterable that are false are removed.
+
+Note that `filter(function, iterable)` is equivalent to the generator expression (`item for item in iterable if function(item)`) if function is not None and (`item for item in iterable if item`) if function is None.
+
 ## 其他
 
-### all(iterable)
-Return True if all elements of the iterable are true (or if the iterable is empty). Equivalent to:
+### `all(iterable)`
+Return `True` if all elements of the iterable are true (or if the iterable is empty). Equivalent to:
 
 ```python
 def all(iterable):
@@ -3941,8 +3939,8 @@ def all(iterable):
     return True
 ```
 
-### any(iterable)
-Return True if any element of the iterable is true. If the iterable is empty, return False. Equivalent to:
+### `any(iterable)`
+Return `True` if any element of the iterable is true. If the iterable is empty, return `False`. Equivalent to:
 
 ```python
 def any(iterable):
@@ -3952,19 +3950,21 @@ def any(iterable):
     return False
 ```
 
-### callable(object)
-Return True if the object argument appears callable, False if not. If this returns true, it is still possible that a call fails, but if it is false, calling object will never succeed. Note that classes are callable (calling a class returns a new instance); instances are callable if their class has a __call__() method.
+### `callable(object)`
+Return `True` if the object argument appears callable, `False` if not. If this returns true, it is still possible that a call fails, but if it is false, calling object will never succeed. Note that classes are callable (calling a class returns a new instance); instances are callable if their class has a `__call__()` method.
 
-### divmod(a, b)
+### `divmod(a, b)`
+
+```
 Take two (non complex) numbers as arguments and return a pair of numbers consisting of their quotient and remainder when using integer division. With mixed operand types, the rules for binary arithmetic operators apply. For integers, the result is the same as (a // b, a % b). For floating point numbers the result is (q, a % b), where q is usually math.floor(a / b) but may be 1 less than that. In any case q * b + a % b is very close to a, if a % b is non-zero it has the same sign as b, and 0 <= abs(a % b) < abs(b).
+```
 
-### hash(object)
+### `hash(object)`
 Return the hash value of the object (if it has one). Hash values are integers. They are used to quickly compare dictionary keys during a dictionary lookup. Numeric values that compare equal have the same hash value (even if they are of different types, as is the case for 1 and 1.0).
 
-Note For objects with custom __hash__() methods, note that hash() truncates the return value based on the bit width of the host machine. See __hash__() for details.
+Note For objects with custom `__hash__()` methods, note that `hash()` truncates the return value based on the bit width of the host machine.
 
 
-### class slice(stop)
-### class slice(start, stop[, step])
-Return a slice object representing the set of indices specified by range(start, stop, step). The start and step arguments default to None. Slice objects have read-only data attributes start, stop and step which merely return the argument values (or their default). They have no other explicit functionality; however they are used by Numerical Python and other third party extensions. Slice objects are also generated when extended indexing syntax is used. For example: a[start:stop:step] or a[start:stop, i]. See itertools.islice() for an alternate version that returns an iterator.
-
+### `class slice(stop)`
+### `class slice(start, stop[, step])`
+Return a slice object representing the set of indices specified by `range(start, stop, step)`. The `start` and `step` arguments default to `None`. Slice objects have read-only data attributes start, stop and step which merely return the argument values (or their default). Slice objects are also generated when extended indexing syntax is used. For example: `a[start:stop:step]`.
