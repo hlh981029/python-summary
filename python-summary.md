@@ -1576,7 +1576,7 @@ class DerivedClassName(Base1, Base2, Base3):
     .
     <statement-N>
 ```
-**太多不看版**：拓扑排序，每层都是从左至右，找到就停
+**太多不看版**：拓扑排序，深度优先，从左到右，找到就停
 
 **这是假的**：For most purposes, in the simplest cases, you can think of the search for attributes inherited from a parent class as depth-first, left-to-right, not searching twice in the same class where there is an overlap in the hierarchy. Thus, if an attribute is not found in DerivedClassName, it is searched for in Base1, then (recursively) in the base classes of Base1, and if it was not found there, it was searched for in Base2, and so on.
 
