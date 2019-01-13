@@ -1595,6 +1595,27 @@ super(Child, self).__init__(arg1, arg2, ... )
 Father.__init__(self, arg1, arg2, ... )
 ```
 
+```python
+>>> class Father1:
+...     def __init__(self):
+...         print('Father1')
+...         
+>>> class Father2:
+...     def __init__(self):
+...         print('Father2')
+...         
+>>> class Child(Father1, Father2):
+...     def __init__(self):
+...         super().__init__()      # Father1
+...         Father2.__init__(self)  # Father2
+...         print('Child')
+...         
+>>> hbz = Child()
+Father1
+Father2
+Child
+```
+
 调用父类其他属性同构造函数
 
 ## Private Variables
