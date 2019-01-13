@@ -309,7 +309,7 @@ s[0:-1:2]	# '02468'
 ```
 ## 内建函数
 
-<table class="reference">
+<table>
 <tbody>
 <tr><th style="width:5%">序号</th><th>方法及描述</th></tr>
 <tr><td>1</td><td><a href="http://www.runoob.com/python3/python3-string-capitalize.html">capitalize()</a><br>将字符串的第一个字符转换为大写</td></tr>
@@ -411,7 +411,7 @@ Lists may be constructed in several ways:
 
 ## 函数
 
-<table class="reference">
+<table>
 <tbody><tr>
 <th style="width:5%">序号</th><th style="width:95%">函数</th></tr>
 <tr><td>1</td><td><a href="http://www.runoob.com/python3/python3-att-list-len.html">len(list)</a><br>列表元素个数</td></tr>
@@ -422,7 +422,7 @@ Lists may be constructed in several ways:
 
 ## 方法
 
-<table class="reference">
+<table>
 <tbody><tr>
 <th style="width:5%">序号</th><th style="width:95%">方法</th></tr>
 <tr><td>1</td><td><a href="http://www.runoob.com/python3/python3-att-list-append.html">list.append(obj)</a><br>在列表末尾添加新的对象</td></tr>
@@ -543,7 +543,7 @@ True
 
 ## 内置方法
 
-<table class="reference">
+<table>
 <tbody><tr>
 <th style="width:5%">序号</th><th style="width:95%">函数及描述</th></tr>
 <tr><td>1</td><td><a href="http://www.runoob.com/python3/python3-att-dictionary-clear.html">dict.clear()</a><br>删除字典内所有元素 </td></tr>
@@ -589,7 +589,7 @@ Return a new `set` or `frozenset` object whose elements are taken from `iterable
 
 ## 内置方法
 
-<table class="reference">
+<table>
 <tbody><tr><th>方法</th><th>描述</th></tr>
 <tr><td colspan="2"><code>set</code>与<code>frozenset</code>都可以使用</td></tr>
 <tr><td><a href="http://www.runoob.com/python3/ref-set-isdisjoint.html" target="_blank">set.isdisjoint(other)</a></td><td>判断两个集合是否包含相同的元素，如果没有返回 True，否则返回 False。</td></tr>
@@ -3783,6 +3783,83 @@ It is sometimes tempting to change a list while you are looping over it; however
 
 # 内建函数
 
+## 所有内建函数
+
+<table>
+<colgroup><col width="21%"><col width="18%"><col width="20%"><col width="20%"><col width="22%"></colgroup>
+<thead valign="bottom"><tr><th colspan="5">Built-in Functions (链接为官方文档)</th></tr></thead>
+<tbody valign="top">
+<tr><td><a href="https://docs.python.org/3.7/library/functions.html#abs"><code>abs()</code></a></td>
+<td><a href="https://docs.python.org/3.7/library/functions.html#delattr"><code>delattr()</code></a></td>
+<td><a href="https://docs.python.org/3.7/library/functions.html#hash"><code>hash()</code></a></td>
+<td><a href="https://docs.python.org/3.7/library/functions.html#func-memoryview"><code>memoryview()</code></a></td>
+<td><a href="https://docs.python.org/3.7/library/functions.html#func-set"><code>set()</code></a></td></tr>
+<tr><td><a href="https://docs.python.org/3.7/library/functions.html#all"><code>all()</code></a></td>
+<td><a href="https://docs.python.org/3.7/library/functions.html#func-dict"><code>dict()</code></a></td>
+<td><a href="https://docs.python.org/3.7/library/functions.html#help"><code>help()</code></a></td>
+<td><a href="https://docs.python.org/3.7/library/functions.html#min"><code>min()</code></a></td>
+<td><a href="https://docs.python.org/3.7/library/functions.html#setattr"><code>setattr()</code></a></td></tr>
+<tr><td><a href="https://docs.python.org/3.7/library/functions.html#any"><code>any()</code></a></td>
+<td><a href="https://docs.python.org/3.7/library/functions.html#dir"><code>dir()</code></a></td>
+<td><a href="https://docs.python.org/3.7/library/functions.html#hex"><code>hex()</code></a></td>
+<td><a href="https://docs.python.org/3.7/library/functions.html#next"><code>next()</code></a></td>
+<td><a href="https://docs.python.org/3.7/library/functions.html#slice"><code>slice()</code></a></td></tr>
+<tr><td><a href="https://docs.python.org/3.7/library/functions.html#ascii"><code>ascii()</code></a></td>
+<td><a href="https://docs.python.org/3.7/library/functions.html#divmod"><code>divmod()</code></a></td>
+<td><a href="https://docs.python.org/3.7/library/functions.html#id"><code>id()</code></a></td>
+<td><a href="https://docs.python.org/3.7/library/functions.html#object"><code>object()</code></a></td>
+<td><a href="https://docs.python.org/3.7/library/functions.html#sorted"><code>sorted()</code></a></td></tr>
+<tr><td><a href="https://docs.python.org/3.7/library/functions.html#bin"><code>bin()</code></a></td>
+<td><a href="https://docs.python.org/3.7/library/functions.html#enumerate"><code>enumerate()</code></a></td>
+<td><a href="https://docs.python.org/3.7/library/functions.html#input"><code>input()</code></a></td>
+<td><a href="https://docs.python.org/3.7/library/functions.html#oct"><code>oct()</code></a></td>
+<td><a href="https://docs.python.org/3.7/library/functions.html#staticmethod"><code>staticmethod()</code></a></td></tr>
+<tr><td><a href="https://docs.python.org/3.7/library/functions.html#bool"><code>bool()</code></a></td>
+<td><a href="https://docs.python.org/3.7/library/functions.html#eval"><code>eval()</code></a></td>
+<td><a href="https://docs.python.org/3.7/library/functions.html#int"><code>int()</code></a></td>
+<td><a href="https://docs.python.org/3.7/library/functions.html#open"><code>open()</code></a></td>
+<td><a href="https://docs.python.org/3.7/library/functions.html#func-str"><code>str()</code></a></td></tr>
+<tr><td><a href="https://docs.python.org/3.7/library/functions.html#breakpoint"><code>breakpoint()</code></a></td>
+<td><a href="https://docs.python.org/3.7/library/functions.html#exec"><code>exec()</code></a></td>
+<td><a href="https://docs.python.org/3.7/library/functions.html#isinstance"><code>isinstance()</code></a></td>
+<td><a href="https://docs.python.org/3.7/library/functions.html#ord"><code>ord()</code></a></td>
+<td><a href="https://docs.python.org/3.7/library/functions.html#sum"><code>sum()</code></a></td></tr>
+<tr><td><a href="https://docs.python.org/3.7/library/functions.html#func-bytearray"><code>bytearray()</code></a></td>
+<td><a href="https://docs.python.org/3.7/library/functions.html#filter"><code>filter()</code></a></td>
+<td><a href="https://docs.python.org/3.7/library/functions.html#issubclass"><code>issubclass()</code></a></td>
+<td><a href="https://docs.python.org/3.7/library/functions.html#pow"><code>pow()</code></a></td>
+<td><a href="https://docs.python.org/3.7/library/functions.html#super"><code>super()</code></a></td></tr>
+<tr><td><a href="https://docs.python.org/3.7/library/functions.html#func-bytes"><code>bytes()</code></a></td>
+<td><a href="https://docs.python.org/3.7/library/functions.html#float"><code>float()</code></a></td>
+<td><a href="https://docs.python.org/3.7/library/functions.html#iter"><code>iter()</code></a></td>
+<td><a href="https://docs.python.org/3.7/library/functions.html#print"><code>print()</code></a></td>
+<td><a href="https://docs.python.org/3.7/library/functions.html#func-tuple"><code>tuple()</code></a></td></tr>
+<tr><td><a href="https://docs.python.org/3.7/library/functions.html#callable"><code>callable()</code></a></td>
+<td><a href="https://docs.python.org/3.7/library/functions.html#format"><code>format()</code></a></td>
+<td><a href="https://docs.python.org/3.7/library/functions.html#len"><code>len()</code></a></td>
+<td><a href="https://docs.python.org/3.7/library/functions.html#property"><code>property()</code></a></td>
+<td><a href="https://docs.python.org/3.7/library/functions.html#type"><code>type()</code></a></td></tr>
+<tr><td><a href="https://docs.python.org/3.7/library/functions.html#chr"><code>chr()</code></a></td>
+<td><a href="https://docs.python.org/3.7/library/functions.html#func-frozenset"><code>frozenset()</code></a></td>
+<td><a href="https://docs.python.org/3.7/library/functions.html#func-list"><code>list()</code></a></td>
+<td><a href="https://docs.python.org/3.7/library/functions.html#func-range"><code>range()</code></a></td>
+<td><a href="https://docs.python.org/3.7/library/functions.html#vars"><code>vars()</code></a></td></tr>
+<tr><td><a href="https://docs.python.org/3.7/library/functions.html#classmethod"><code>classmethod()</code></a></td>
+<td><a href="https://docs.python.org/3.7/library/functions.html#getattr"><code>getattr()</code></a></td>
+<td><a href="https://docs.python.org/3.7/library/functions.html#locals"><code>locals()</code></a></td>
+<td><a href="https://docs.python.org/3.7/library/functions.html#repr"><code>repr()</code></a></td>
+<td><a href="https://docs.python.org/3.7/library/functions.html#zip"><code>zip()</code></a></td></tr>
+<tr><td><a href="https://docs.python.org/3.7/library/functions.html#compile"><code>compile()</code></a></td>
+<td><a href="https://docs.python.org/3.7/library/functions.html#globals"><code>globals()</code></a></td>
+<td><a href="https://docs.python.org/3.7/library/functions.html#map"><code>map()</code></a></td>
+<td><a href="https://docs.python.org/3.7/library/functions.html#reversed"><code>reversed()</code></a></td>
+<td><a href="https://docs.python.org/3.7/library/functions.html#__import__"><code>__import__()</code></a></td></tr>
+<tr><td><a href="https://docs.python.org/3.7/library/functions.html#complex"><code>complex()</code></a></td>
+<td><a href="https://docs.python.org/3.7/library/functions.html#hasattr"><code>hasattr()</code></a></td>
+<td><a href="https://docs.python.org/3.7/library/functions.html#max"><code>max()</code></a></td>
+<td><a href="https://docs.python.org/3.7/library/functions.html#round"><code>round()</code></a></td><td>&nbsp;</td></tr>
+</tbody></table>
+
 ## 属性相关
 
 ### `getattr(object, name[, default])`
@@ -3851,6 +3928,15 @@ Return a new sorted list from the items in iterable.
 Has two optional arguments which must be specified as keyword arguments.
 
 key specifies a function of one argument that is used to extract a comparison key from each element in iterable (for example, `key=str.lower`). The default value is `None` (compare the elements directly).
+
+对于dict使用sorted：
+```python
+>>> d = {'data1':3, 'data2':1, 'data3':2, 'data4':4}  
+>>> sorted(d.items())
+[('data1', 3), ('data2', 1), ('data3', 2), ('data4', 4)]
+>>> sorted(d.items(), key=lambda x: x[1])
+[('data2', 1), ('data3', 2), ('data1', 3), ('data4', 4)]
+```
 
 reverse is a boolean value. If set to `True`, then the list elements are sorted as if each comparison were reversed.
 
@@ -3968,3 +4054,15 @@ Note For objects with custom `__hash__()` methods, note that `hash()` truncates 
 ### `class slice(stop)`
 ### `class slice(start, stop[, step])`
 Return a slice object representing the set of indices specified by `range(start, stop, step)`. The `start` and `step` arguments default to `None`. Slice objects have read-only data attributes start, stop and step which merely return the argument values (or their default). Slice objects are also generated when extended indexing syntax is used. For example: `a[start:stop:step]`.
+
+# IO
+
+[官方文档 - 格式化输出 & 文件IO](https://docs.python.org/3/tutorial/inputoutput.html)
+
+[官方文档 - 格式化输出用法](https://docs.python.org/3/library/string.html#formatspec)
+
+# map reduce filter 讲解
+
+[廖雪峰 - map & reduce](https://www.liaoxuefeng.com/wiki/0014316089557264a6b348958f449949df42a6d3a2e542c000/0014317852443934a86aa5bb5ea47fbbd5f35282b331335000)
+
+[廖雪峰 - filter](https://www.liaoxuefeng.com/wiki/0014316089557264a6b348958f449949df42a6d3a2e542c000/001431821084171d2e0f22e7cc24305ae03aa0214d0ef29000)
