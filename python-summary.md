@@ -510,7 +510,7 @@ TypeError: can only concatenate tuple (not "list") to tuple
 Dictionaries can be created by placing a comma-separated list of key: value pairs within braces, for example: `{'jack': 4098, 'sjoerd': 4127}` or `{4098: 'jack', 4127: 'sjoerd'}`, or by the `dict` constructor.
 
 - 键必须是唯一的，但值则不必。  
-- 值可以取任何数据类型，但键必须是`hashable`的，如字符串，数字或元组（自定义的类也是`hashable`）。创建时如果同一个键被赋值两次，后一个值会被记住.
+- 值可以取任何数据类型，但键必须是`hashable`的，如字符串，数字或元组（自定义的类也是`hashable`）。创建时如果同一个键被赋值两次，后一个值会被记住.
 
 > `hashable`  
 > An object is hashable if it has a hash value which never changes during its lifetime (it needs a `__hash__()` method), and can be compared to other objects (it needs an `__eq__()` method). Hashable objects which compare equal must have the same hash value.  
@@ -2290,7 +2290,7 @@ def gen():  # defines a generator function
 
 When a generator function is called, it returns an `iterator` known as a `generator`. That generator then controls the execution of the generator function. The execution starts when one of the generator’s methods is called. At that time, the execution proceeds to the first `yield` expression, where it is suspended again, returning the value of `expression_list` to the generator’s caller. By suspended, we mean that all local state is retained, including the current bindings of local variables, the instruction pointer, the internal evaluation stack, and the state of any exception handling. When the execution is resumed by calling one of the generator’s methods, the function can proceed exactly as if the yield expression were just another external call. 
 
-**`yield` 表达式返回值**：The value of the yield expression after resuming depends on the method which resumed the execution. If `__next__()` is used (typically via either a for or the `next()` builtin) then the result is `None`. Otherwise, if `send()` is used, then the result will be the value passed in to that method.
+**`yield` 表达式返回值**：The value of the yield expression after resuming depends on the method which resumed the execution. If `__next__()` is used (typically via either a for or the `next()` builtin) then the result is `None`. Otherwise, if `send()` is used, then the result will be the value passed in to that method.
 
 **如果在 `generator` 函数结束前不再被使用**：Yield expressions are allowed anywhere in a `try` construct. If the generator is not resumed before it is finalized (by reaching a zero reference count or by being garbage collected), the generator-iterator’s `close()` method will be called, allowing any pending `finally` clauses to execute.
 
