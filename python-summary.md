@@ -3819,11 +3819,13 @@ It is sometimes tempting to change a list while you are looping over it; however
 
 # 正则表达式
 
-见[菜鸟教程-正则表达式](http://www.runoob.com/python3/python3-reg-expressions.html)
+见[菜鸟教程 - 正则表达式](http://www.runoob.com/python3/python3-reg-expressions.html)
 
 # OS 模块
 
-见[菜鸟教程-OS](http://www.runoob.com/python3/python3-os-file-methods.html)
+见[菜鸟教程 - OS](http://www.runoob.com/python3/python3-os-file-methods.html)
+
+见[沐风麟 - OS](https://www.cnblogs.com/mufenglin/p/7676160.html)
 
 # 内建函数
 
