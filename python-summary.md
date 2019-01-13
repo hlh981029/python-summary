@@ -3771,3 +3771,11 @@ It is sometimes tempting to change a list while you are looping over it; however
 [56.2, 51.7, 55.3, 52.5, 47.8]
 ```
 
+
+# 正则表达式
+
+见[菜鸟教程-正则表达式](http://www.runoob.com/python3/python3-reg-expressions.html)
+
+# OS 模块
+
+见[菜鸟教程-OS](http://www.runoob.com/python3/python3-os-file-methods.html)
