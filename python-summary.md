@@ -2547,25 +2547,24 @@ setting 'new_field' = 1
 所以呢, 只需要在__setattr__ 方法里挡一下, 就可以阻止属性值的设置, 可谓是釜底抽薪. 代码:
 
 ```python
-# encoding=utf8
 class MyCls(object):
-    readonly_property = 'readonly_property' 
     def __init__(self):
-        pass
+        self.__readonly_property = 'readonly_property'
+
+    def __getattr__(self, item):
+        if item == 'readonly_property':
+            return self.__readonly_property
+
     def __setattr__(self, f, v):
         if f == 'readonly_property':
-            raise AttributeError('{}.{} is READ ONLY'.\
-                                 format(type(self).__name__, f))
-
+            raise AttributeError(f'{type(self).__name__}.{f} is READ ONLY')
         else:
             self.__dict__[f] = v
 
 if __name__ == '__main__':
     obj = MyCls()
-
     obj.any_other_property = 'any_other_property'
     print(obj.any_other_property)
-
     print(obj.readonly_property)
     obj.readonly_property = 1
 ```
@@ -2576,7 +2575,7 @@ if __name__ == '__main__':
 any_other_property
 readonly_property
 Traceback (most recent call last):
-  File "...", line 21, in <module>
+  File "...", line 20, in <module>
     obj.readonly_property = 1
     ...
   AttributeError: MyCls.readonly_property is READ ONLY
@@ -4111,3 +4110,7 @@ Return a slice object representing the set of indices specified by `range(start,
 [廖雪峰 - map & reduce](https://www.liaoxuefeng.com/wiki/0014316089557264a6b348958f449949df42a6d3a2e542c000/0014317852443934a86aa5bb5ea47fbbd5f35282b331335000)
 
 [廖雪峰 - filter](https://www.liaoxuefeng.com/wiki/0014316089557264a6b348958f449949df42a6d3a2e542c000/001431821084171d2e0f22e7cc24305ae03aa0214d0ef29000)
+
+# 日期和时间
+
+[菜鸟教程 - 日期和时间](http://www.runoob.com/python3/python3-date-time.html)
