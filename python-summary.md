@@ -2359,7 +2359,7 @@ TypeError('spam',)
 Don't forget to clean up when 'close()' is called.
 ```
 
-## `yield form`
+## `yield from`
 
 PEP 380 adds the `yield from` expression, allowing a generator to delegate part of its operations to another generator. This allows a section of code containing `yield` to be factored out and placed in another generator. Additionally, the subgenerator is allowed to return with a value, and the value is made available to the delegating generator.
 
