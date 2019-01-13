@@ -3031,6 +3031,30 @@ Called to implement the built-in function `round()` and math functions `trunc(),
 
 If `__int__()` is not defined then the built-in function int() falls back to `__trunc__()`.
 
+### With Statement Context Managers
+
+A context manager is an object that defines the runtime context to be established when executing a with statement. The context manager handles the entry into, and the exit from, the desired runtime context for the execution of the block of code. Context managers are normally invoked using the with statement (described in section The with statement), but can also be used by directly invoking their methods.
+
+Typical uses of context managers include saving and restoring various kinds of global state, locking and unlocking resources, closing opened files, etc.
+
+```python
+object.__enter__(self)
+```
+
+Enter the runtime context related to this object. The with statement will bind this method’s return value to the target(s) specified in the as clause of the statement, if any.
+
+```python
+object.__exit__(self, exc_type, exc_value, traceback)
+```
+
+Exit the runtime context related to this object. The parameters describe the exception that caused the context to be exited. If the context was exited without an exception, all three arguments will be None.
+
+If an exception is supplied, and the method wishes to suppress the exception (i.e., prevent it from being propagated), it should return a true value. Otherwise, the exception will be processed normally upon exit from this method.
+
+Note that `__exit__()` methods should not reraise the passed-in exception; this is the caller’s responsibility.
+
+
+
 ### Special method lookup
 
 For custom classes, implicit invocations of special methods are only guaranteed to work correctly if defined on an object’s type, not in the object’s instance dictionary. That behaviour is the reason why the following code raises an exception:
