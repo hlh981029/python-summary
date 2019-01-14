@@ -4153,3 +4153,58 @@ Return a slice object representing the set of indices specified by `range(start,
 # 日期和时间
 
 [菜鸟教程 - 日期和时间](http://www.runoob.com/python3/python3-date-time.html)
+
+# 考试考了啥
+
+- 作者国籍emmmmm
+
+- 列表的`*`是浅拷贝
+
+    ```python
+    >>> a = [[1]] * 3
+    >>> a[0][0] = 5
+    >>> a
+    [[5], [5], [5]]
+    ```
+
+- `map` `reduce` `lambda`
+
+    ```python
+    >>> from functools import reduce
+    >>> list(map(lambda i:reduce(lambda x, y: x*y, range(1, i+1), 1), [1,2,3,4,5]))
+    [1, 2, 6, 24, 120]
+    ```
+
+- 字符串 & 运算符
+
+    ```python
+    >>> 3 * 'abc'
+    'abcabcabc'
+    >>> 1 + 'a'
+    Traceback (most recent call last):
+    File "<stdin>", line 1, in <module>
+    TypeError: unsupported operand type(s) for +: 'int' and 'str'
+    ```
+
+- `sorted` `reversed` 返回值
+
+    ```python
+    >>> sorted([1,2,3,4], reverse=True) == reversed([4,3,2,1])
+    False
+    >>> sorted([1,2,3,4], reverse=True)
+    [4, 3, 2, 1]
+    >>> reversed([4,3,2,1])
+    <list_reverseiterator object at 0x101129240>
+    ```
+
+- 赋值运算符
+
+    ```python
+    >>> x = y = z = 1
+    >>>
+    >>> x = (y = z + 1)
+    File "<stdin>", line 1
+        x = (y = z + 1)
+            ^
+    SyntaxError: invalid syntax
+    ```
